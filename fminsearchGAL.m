@@ -1,6 +1,6 @@
 function fminsearchGAL( jobtag, array_id )
 
-folder_name = '/Users/jh428/Dropbox (HMS)/Jiayin Notebook/J9_JY_GAL_model/metadata/mcmc_mutant_and_wt_1c_Mar30';
+folder_name = '/Users/Jupiter/Dropbox (HMS)/Jiayin Notebook/J9_JY_GAL_model/metadata/mcmc_mutant_and_wt_1c_Mar30';
 task_id = str2double(array_id);
 filepath = fullfile(folder_name, [jobtag, num2str(task_id, '_%03d'), '.mat']);
 load(filepath)
@@ -21,10 +21,15 @@ opt = optimset...
     , 'OutputFcn', @(x, optimValues, state) fminsearch_outfun(x, optimValues, state, outfilepath) );
 
 fminsearch(...
-    @(x) evalGalPathway(...
+    @(x) myfun(...
     update_param( param_init, parameter_name, x )...
     , trait) ...
     , param_init_value ...
     , opt)
 
+end
+
+function sum_obj = myfun(param, trait)
+output = evalGalPathway(param, trait);
+sum_obj = output.sum_obj;
 end
