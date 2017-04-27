@@ -217,7 +217,7 @@ end
 
 function [prob, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol)
 
-output = evalGalPathway(param, trait);
+output = evalGalPathway(param, trait, 'one_column');
 prob = - output.sum_obj / error_tol^2;
 simulation_result_linear = output.simulation_result_linear;
 

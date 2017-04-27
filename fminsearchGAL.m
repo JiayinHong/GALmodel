@@ -30,6 +30,6 @@ fminsearch(...
 end
 
 function sum_obj = myfun(param, trait)
-output = evalGalPathway(param, trait);
+output = evalGalPathway(param, trait, 'one_column');
 sum_obj = output.sum_obj;
 end
