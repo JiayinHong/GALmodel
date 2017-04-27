@@ -1,6 +1,6 @@
 function fminsearchGAL( jobtag, array_id )
 
-folder_name = '/Users/Jupiter/Dropbox (HMS)/Jiayin Notebook/J9_JY_GAL_model/metadata/mcmc_mutant_and_wt_1c_Mar30';
+folder_name = '../metaData/mcmc_mutant_and_wt_1c';
 task_id = str2double(array_id);
 filepath = fullfile(folder_name, [jobtag, num2str(task_id, '_%03d'), '.mat']);
 load(filepath)
