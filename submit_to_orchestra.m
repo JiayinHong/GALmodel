@@ -5,25 +5,25 @@
 
 n_init = 200;
 
-folder_random_init = '../metadata/mcmc_mutant_and_wt_1c_Mar30';
+folder_random_init = '../metadata/mcmc_mutant_and_wt_1c';
 if ~exist(folder_random_init)
     mkdir(folder_random_init)
 end
 
-load('../metadata/mig1d_v2_1c.mat')
+load('../metadata/trait_extraction/mig1d_1c.mat')
 trait_mig1d_1c = trait;
 
-load('../metadata/gal80d_v2_1c.mat')
+load('../metadata/trait_extraction/gal80d_1c.mat')
 trait_gal80d_1c = trait;
 
-load('../metadata/wildtype_v2_1c.mat')
+load('../metadata/trait_extraction/wildtype_1c.mat')
 trait_wt_1c = trait;
 
 %%  generate config .mat files for wildtype
-parameter_update = readtable('MCMC_parameter_config_including_all_n_d.csv');
+parameter_update = readtable('MCMC_parameter_config.csv');
 error_tol = .15;
-n_propose = 100000;
-param_init_base = set_parameter(6);
+n_propose = 10000;
+param_init_base = set_parameter(2);
 for i_init = 1:n_init
     parameter_val = nan(height(parameter_update), 1);
     for i = 1:height(parameter_update)
@@ -35,7 +35,7 @@ for i_init = 1:n_init
     param_init = update_param(param_init_base, parameter_update.parameter_name, parameter_val);
     
     trait = trait_wt_1c;
-    jobtag = 'MCMC_wt_1c';
+    jobtag = 'double_gradient_wt_1c';
     save(fullfile(folder_random_init, [jobtag, num2str(i_init, '_%03d'), '.mat'])...
         , 'parameter_update', 'param_init' ...
         , 'error_tol', 'n_propose' ...
