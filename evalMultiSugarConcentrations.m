@@ -5,7 +5,8 @@ n_condition = length(gluc_condition);
 y_ss_list = nan(n_condition, n_var);
 
 load_global;
-opt = odeset('NonNegative',1:12);
+% opt = odeset('NonNegative',1:12);
+opt = [];
 
 for i_condition = 1:n_condition
     
