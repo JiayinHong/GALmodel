@@ -1,6 +1,9 @@
 function dydt = GALode( t, y, param )
 % 2017.4.20 GAL model v1.0
 
+y = max(y,0);  % solve the negative value problem
+% this is more efficient than y(y<0)=0
+
 % define variables
 G1 = y(1);
 G2 = y(2);
