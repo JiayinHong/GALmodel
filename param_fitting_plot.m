@@ -2,7 +2,7 @@ function  param_fitting_plot( param, trait, fit_type )
 % this version works for single gradient, one row, one column, 
 % or one cross of double gradient data
 
-output = evalGalPathway( param, trait );
+output = evalGalPathway( param, trait, fit_type );
 markersize = 5;
 
 switch fit_type
@@ -16,27 +16,38 @@ switch fit_type
         index_list = [1:12];
 end
 
-n_condition = length(index_list);
+sugar_ratio = trait{index_list, 'galc'} ./ trait{index_list, 'gluc'};
+eval_tab = table(output.experiment_result_linear(:,1)...
+    , output.experiment_result_linear(:,2)...
+    , output.simulation_result_linear(:,1)...
+    , output.simulation_result_linear(:,2)...
+    , trait{index_list, 'mask_basal'}...
+    , trait{index_list, 'mask_induction'}...
+    , sugar_ratio...
+    , 'VariableNames', {'exp_basal', 'exp_induce', 'sim_basal', 'sim_induce', 'mask_basal', 'mask_induce', 'sugar_ratio'});
+eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
+n_condition = height(eval_tab);
 
 for i_condition = 1:n_condition
-    if trait{index_list(i_condition), 'mask_basal'}
-        plot(i_condition, output.experiment_result_linear(index_list(i_condition), 1), 'ok', 'markersize', markersize)
+    if eval_tab{i_condition, 'mask_basal'}
+        plot(i_condition, eval_tab{i_condition, 'exp_basal'}, 'ok', 'markersize', markersize)
     else
-        plot(i_condition, output.experiment_result_linear(index_list(i_condition), 1), '+k', 'markersize', markersize)
+        plot(i_condition, eval_tab{i_condition, 'exp_basal'}, '+k', 'markersize', markersize)
     end
     hold on
-    if trait{index_list(i_condition), 'mask_induction'}
-        plot(i_condition, output.experiment_result_linear(index_list(i_condition), 2), 'or', 'markersize', markersize)
+    if eval_tab{i_condition, 'mask_induce'}
+        plot(i_condition, eval_tab{i_condition, 'exp_induce'}, 'or', 'markersize', markersize)
     else
-        plot(i_condition, output.experiment_result_linear(index_list(i_condition), 2), '+r', 'markersize', markersize)
+        plot(i_condition, eval_tab{i_condition, 'exp_induce'}, '+r', 'markersize', markersize)
     end
 end
 
-plot(output.simulation_result_linear(index_list,1), 'k-', 'linewidth', 2)
-plot(output.simulation_result_linear(index_list,2), 'r-', 'linewidth', 2)
+plot(eval_tab{:,'sim_basal'}, 'k-', 'linewidth', 2)
+plot(eval_tab{:,'sim_induce'}, 'r-', 'linewidth', 2)
 set(gca, 'yscale', 'log')
 xlim([0, n_condition+1])
-title(num2str(output.sum_obj, 'obj: %1.2f'))
+title(sprintf('%s - obj : %1.2f', changeunderscore(fit_type), output.sum_obj))
+% title(num2str(output.sum_obj, 'obj: %1.2f'))
 
 
 end
