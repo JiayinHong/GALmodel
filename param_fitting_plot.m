@@ -1,6 +1,6 @@
 function  param_fitting_plot( param, trait, fit_type )
-% this version works for single gradient, one row or one column of double
-% gradient data
+% this version works for single gradient, one row, one column, 
+% or one cross of double gradient data
 
 output = evalGalPathway( param, trait );
 markersize = 5;
@@ -10,6 +10,8 @@ switch fit_type
         index_list = [4:8:92];
     case 'one_column'
         index_list = [65:72];
+    case 'one_cross'
+        index_list = [4:8:60,65:72,76,84,92];
     case 'single_gradient'
         index_list = [1:12];
 end
@@ -33,7 +35,7 @@ end
 plot(output.simulation_result_linear(index_list,1), 'k-', 'linewidth', 2)
 plot(output.simulation_result_linear(index_list,2), 'r-', 'linewidth', 2)
 set(gca, 'yscale', 'log')
-xlim([0 9])
+xlim([0, n_condition+1])
 title(num2str(output.sum_obj, 'obj: %1.2f'))
 
 
