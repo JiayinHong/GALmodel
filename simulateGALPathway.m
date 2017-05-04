@@ -1,4 +1,4 @@
-function simulateGALPathway( trait, param_init, parameter_update, varargin )
+function simulateGALPathway( trait, param_init, parameter_update, fit_type, varargin )
 
 mcmc_version = '3.0';
 
@@ -8,6 +8,7 @@ p = inputParser;
 addRequired(p,'trait',@isstruct);
 addRequired(p,'param_init',@isstruct);
 addRequired(p,'parameter_update',@isstruct);
+addRequired(p,'fit_type',@isstr);
 
 addOptional(p,'n_propose',10000,@isnumeric);
 addOptional(p,'error_tol',0.15,@isnumeric);
@@ -16,11 +17,12 @@ addOptional(p,'jobtag','',@isstr);
 addOptional(p,'arrayid','',@isstr);
 addOptional(p,'allmovefrac',0,@isnumeric);
 
-parse(p, trait, param_init, parameter_update, varargin{:});
+parse(p, trait, param_init, parameter_update, fit_type, varargin{:});
 p = p.Results;
 trait = p.trait;
 param_init = p.param_init;
 parameter_update = p.parameter_update;
+fit_type = p.fit_type;
 n_propose = p.n_propose;
 error_tol = p.error_tol;
 outfilepath = p.outfilepath;
@@ -35,12 +37,13 @@ if isempty(outfilepath)
         mkdir('../results/mcmc_multiple_trait/')
     end
     % Now set the file path
+    task_id = str2double(arrayid);
     outfilepath = fullfile(...
         '../results/mcmc_multiple_trait/', ...
         sprintf(...
-        '%s-%s_%s.mat', ...
-        jobtag, arrayid, ...
-        datestr(now, 'yyyymmdd_hh:MM') ...
+        '%s-%s-%s.mat', ...
+        jobtag, num2str(task_id, '%03d'), ...
+        datestr(now, 'yymmdd_hh:MM') ...
         ) ...
         );
 end
@@ -63,7 +66,7 @@ for plate_names = fieldnames(trait)'
     get_prob_parameter_over_prior = @(param, parameter_update) get_param_prob(param, parameter_update);
     
     % init the loop
-    [prob_data_over_parameter.(plate_name), simulation_result_linear] = get_prob_data_over_parameter(param_plate, trait_plate, error_tol);
+    [prob_data_over_parameter.(plate_name), simulation_result_linear] = get_prob_data_over_parameter(param_plate, trait_plate, error_tol, fit_type);
     prob_parameter_over_prior.(plate_name) = get_prob_parameter_over_prior(param_plate, param_update_plate);
     param_prob.(plate_name) = prob_data_over_parameter.(plate_name) + prob_parameter_over_prior.(plate_name);
 end
@@ -164,7 +167,7 @@ for i_propose = 1:n_propose
     % evaluate the prob
     for plate_names = fieldnames(trait)'
         plate_name = plate_names{1};
-        [prob_data_over_parameter_new.(plate_name), simulation_result_linear_new] = get_prob_data_over_parameter(param_new.(plate_name), trait.(plate_name), error_tol);
+        [prob_data_over_parameter_new.(plate_name), simulation_result_linear_new] = get_prob_data_over_parameter(param_new.(plate_name), trait.(plate_name), error_tol, fit_type);
         prob_parameter_over_prior_new.(plate_name) = get_prob_parameter_over_prior(param_new.(plate_name), parameter_update.(plate_name));
         param_prob_new.(plate_name) = prob_data_over_parameter_new.(plate_name) + prob_parameter_over_prior_new.(plate_name);
     end
@@ -257,9 +260,9 @@ for i = 1:height(parameter_update)
 end
 end
 
-function [prob, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol)
+function [prob, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol, fit_type)
 
-output = evalGalPathway(param, trait);
+output = evalGalPathway(param, trait, fit_type);
 prob = - output.sum_obj / error_tol^2;
 simulation_result_linear = output.simulation_result_linear;
 

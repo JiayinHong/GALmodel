@@ -1,4 +1,4 @@
-function mcmc_without_prior( trait, param_init, parameter_update, varargin )
+function mcmc_without_prior( trait, param_init, parameter_update, fit_type, varargin )
 %   fixed the bug with creating new parameter,
 %   change from 'param_init' to 'param_map'
 %   this function is a special version adapted from the original mcmc
@@ -11,6 +11,7 @@ p = inputParser;
 addRequired(p,'trait',@istable);
 addRequired(p,'param_init',@isstruct);
 addRequired(p,'parameter_update',@istable);
+addRequired(p,'fit_type',@isstr);
 
 addOptional(p,'n_propose',10000,@isnumeric);
 addOptional(p,'error_tol',0.15,@isnumeric);
@@ -19,11 +20,12 @@ addOptional(p,'jobtag','',@isstr);
 addOptional(p,'arrayid','',@isstr);
 addOptional(p,'allmovefrac',0,@isnumeric);
 
-parse(p, trait, param_init, parameter_update, varargin{:});
+parse(p, trait, param_init, parameter_update, fit_type, varargin{:});
 p = p.Results;
 trait = p.trait;
 param_init = p.param_init;
 parameter_update = p.parameter_update;
+fit_type = p.fit_type;
 n_propose = p.n_propose;
 error_tol = p.error_tol;
 outfilepath = p.outfilepath;
@@ -38,12 +40,13 @@ if isempty(outfilepath)
         mkdir('../results/mcmc_without_prior/')
     end
     % Now set the file path
+    task_id = str2double(arrayid);
     outfilepath = fullfile(...
         '../results/mcmc_without_prior/', ...
         sprintf(...
-        '%s-%s_%s.mat', ...
-        jobtag, arrayid, ...
-        datestr(now, 'yyyymmdd_hh:MM') ...
+        '%s-%s-%s.mat', ...
+        jobtag, num2str(task_id, '%03d'), ...
+        datestr(now, 'yymmdd_hh:MM') ...
         ) ...
         );
 end
@@ -52,11 +55,11 @@ end
 n_propose_write = 5;  % the interval of iterations to output results
 
 % define function to get prior probability of a given trait and param
-get_prob_parameter_over_prior = @(param, parameter_update) get_param_prob(param, parameter_update);
+% get_prob_parameter_over_prior = @(param, parameter_update) get_param_prob(param, parameter_update);
 
 % init the loop
 param = param_init;
-[prob_data_over_parameter, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol);
+[prob_data_over_parameter, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol, fit_type);
 
 i_parameter_to_change = [];
 
@@ -137,7 +140,7 @@ for i_propose = 1:n_propose
     end
     
     % evaluate the prob
-    [prob_data_over_parameter_new, simulation_result_linear_new] = get_prob_data_over_parameter(param_new, trait, error_tol);
+    [prob_data_over_parameter_new, simulation_result_linear_new] = get_prob_data_over_parameter(param_new, trait, error_tol, fit_type);
     
     % evaluate jumping prob
     relative_transition_prob = 0;  % symmetric move in log scale, hence 0
@@ -200,24 +203,24 @@ end
 end
 
 
-function res = get_param_prob(param, parameter_update)
-res = 0;
-for i = 1:height(parameter_update)
-    res = res + ...
-        + log(...
-        pdf(...
-        'lognormal', ...
-        param.(parameter_update{i, 'parameter_name'}{1}), ...
-        log(parameter_update{i, 'prior_mean'}), ...
-        parameter_update{i, 'prior_sigma'} ...
-        ) ...
-        );
-end
-end
+% function res = get_param_prob(param, parameter_update)
+% res = 0;
+% for i = 1:height(parameter_update)
+%     res = res + ...
+%         + log(...
+%         pdf(...
+%         'lognormal', ...
+%         param.(parameter_update{i, 'parameter_name'}{1}), ...
+%         log(parameter_update{i, 'prior_mean'}), ...
+%         parameter_update{i, 'prior_sigma'} ...
+%         ) ...
+%         );
+% end
+% end
 
-function [prob, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol)
+function [prob, simulation_result_linear] = get_prob_data_over_parameter(param, trait, error_tol, fit_type)
 
-output = evalGalPathway(param, trait, 'one_column');
+output = evalGalPathway(param, trait, fit_type);
 prob = - output.sum_obj / error_tol^2;
 simulation_result_linear = output.simulation_result_linear;
 
