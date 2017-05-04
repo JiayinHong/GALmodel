@@ -10,7 +10,12 @@ param.exglu = 0.25*perc_to_nm;
 param.exgal = 0;
 odefunc = @(t,y)GALode(t,y,param);
 % when exgal==0 -> Gal3*=0, C83=0, gal=0
-tmp = [0, ones(1,4),0,1,1,0,1,1,0];
+tmp = ones(1,12);
+tmp(1) = 0;     % Gal1
+tmp(6) = 0;     % Gal3*
+tmp(9) = 0;     % C83
+tmp(12) = 0;    % intracellular galactose
+% tmp = [0, ones(1,4),0,1,1,0,1,1,0];
 [~, y] = ode15s( odefunc, [0 100000], tmp, opt);
 y0_Glu=y(end,:);
 
@@ -19,7 +24,11 @@ param.exglu = 0;
 param.exgal = 0.25*perc_to_nm;
 odefunc = @(t,y)GALode(t,y,param);
 % when exglu==0 -> R*=0, glu=0
-tmp = [0, ones(1,6),0,1,1,0,1];
+tmp = ones(1,12);
+tmp(1) = 0;     % Gal1
+tmp(8) = 0;     % R*
+tmp(11) = 0;    % intracellular glucose
+% tmp = [0, ones(1,6),0,1,1,0,1];
 [~, y] = ode15s( odefunc, [0 100000], tmp, opt);
 y0_Gal=y(end,:);
 
