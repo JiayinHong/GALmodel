@@ -13,8 +13,11 @@ files = dir( fullfile(mcmc_data_folder, '*.mat') );
 % filename_pat = '([\d_\w]+)-\d{1,3}_\d{8}_\d{6}.mat';
 % example: 'MCMC_multiple_trait-11_20170410_155138.mat'
 
-filename_pat = '([\d_\w]+)-\d{1,3}_\d{8}_\d{2}:\d{2}.mat';
+% filename_pat = '([\d_\w]+)-\d{1,3}_\d{8}_\d{2}:\d{2}.mat';
 % example: 'MCMC_wt_1c-13_20170422_20:53.mat'
+
+filename_pat = '([\d_\w]+)-\d{3}-\d{6}_\d{2}:\d{2}.mat';
+% example: 'wildtype_1r1c-001-170502_18:12.mat'
 
 
 for i_file = 1:length(files)
