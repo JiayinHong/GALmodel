@@ -29,3 +29,22 @@ for algorithm = algorithm_list
         shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
     end
 end
+
+%% test what if we don't force aR=0 or a80=0, ag80=0
+jobtag_list = {'all_update_mig1d_1r', 'all_update_gal80d_1r', ...
+    'all_update_mig1d_1c', 'all_update_gal80d_1c', ...
+    'all_update_mig1d_1r1c', 'all_update_gal80d_1r1c'};
+folder_name = '../metaData/random_init_mutant_and_wt';
+for jobtag = jobtag_list
+    jobtag = jobtag{1};
+    
+    if regexp(jobtag, '\w*_1r$')
+        fit_type = 'one_row';
+    elseif regexp(jobtag, '\w*_1c$')
+        fit_type = 'one_column';
+    elseif regexp(jobtag, '\w*_1r1c$')
+        fit_type = 'one_cross';
+    end
+    
+    shell_on_slurm_generator( 'mcmc', jobtag, folder_name, fit_type )
+end
