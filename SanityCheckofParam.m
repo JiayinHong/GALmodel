@@ -8,113 +8,144 @@ mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
 % trait = mcmc_result{1,'trait'}{1};
 % n_chain = height(mcmc_result);
 
+%% define a threshold for good fitting
+load(wt_subset{1,'filepath'}{1}, 'error_tol');
+thresh = - 0.1 / error_tol ^2;  % i.e. obj < 0.1
+
 %% show how parameters fit wildtype data
 wt_jobtags = {'wildtype_1c', 'wildtype_1r', 'wildtype_1r1c'};
 wt_subset = mcmc_result(ismember(mcmc_result.jobtag, wt_jobtags),:);
 wt_subset = sortrows(wt_subset, 'jobtag');
+wt_goodfit = wt_subset(wt_subset.param_prob_map > thresh, :);
 
-n_example = height(wt_subset);
+n_example = height(wt_goodfit);
 n_row = floor(n_example ^0.5);
 n_col = ceil(n_example / n_row);
+
+wt_conc_Glu_list = struct();
+wt_conc_Gal_list = struct();
+i_row = 1;
+i_col = 1;
+i_cross = 1;
 
 figure
 set(gcf, 'position', [401 155 1262 757]);
 for i_example = 1:n_example
-    param = wt_subset{i_example, 'param_map'};
-    trait = wt_subset{i_example, 'trait'}{1};
+    param = wt_goodfit{i_example, 'param_map'};
+    trait = wt_goodfit{i_example, 'trait'}{1};
+    subplot(n_row, n_col, i_example)
+    
     % mapping fit type with jobtags
-    if regexp(wt_subset{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
+    if regexp(wt_goodfit{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
         fit_type = 'one_row';
-    elseif regexp(wt_subset{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
+        [wt_conc_Glu_list.row(i_row,:,:), wt_conc_Gal_list.row(i_row,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_row = i_row + 1;
+    elseif regexp(wt_goodfit{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
         fit_type = 'one_column';
-    elseif regexp(wt_subset{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
+        [wt_conc_Glu_list.col(i_col,:,:), wt_conc_Gal_list.col(i_col,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_col = i_col + 1;
+    elseif regexp(wt_goodfit{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
         fit_type = 'one_cross';
+        [wt_conc_Glu_list.cross(i_cross,:,:), wt_conc_Gal_list.cross(i_cross,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_cross = i_cross + 1;
     end
     
-    subplot(n_row, n_col, i_example)
-    param_fitting_plot(param, trait, fit_type)
 end
-export_fig(fullfile('../results/param_sanity_check_plot/', 'wildtype-fitting'));
-
-% n_example = 16;
-% n_row = floor(n_example ^0.5);
-% n_col = ceil(n_example / n_row);
-% 
-% figure
-% set(gcf, 'position', [360 156 722 542])
-% for i_example = 1:n_example
-%     param = mcmc_result{i_example, 'param_map'};
-%     subplot(n_row, n_col, i_example)
-%     param_fitting_plot(param, trait, 'one_column')
-% end
+export_fig(fullfile('../results/param_sanity_check_plot/', 'filtered-wildtype-fitting'));
 
 %% show how parameters fit mig1d data
 mig1d_jobtags = {'mig1d_1c', 'mig1d_1r', 'mig1d_1r1c'};
 mig1d_subset = mcmc_result(ismember(mcmc_result.jobtag, mig1d_jobtags),:);
 mig1d_subset = sortrows(mig1d_subset, 'jobtag');
+mig1d_goodfit = mig1d_subset(mig1d_subset.param_prob_map > thresh, :);
 
-n_example = height(mig1d_subset);
+n_example = height(mig1d_goodfit);
 n_row = floor(n_example ^0.5);
 n_col = ceil(n_example / n_row);
+
+mig1d_conc_Glu_list = struct();
+mig1d_conc_Gal_list = struct();
+i_row = 1;
+i_col = 1;
+i_cross = 1;
 
 figure
 set(gcf, 'position', [401 155 1262 757]);
 for i_example = 1:n_example
-    param = mig1d_subset{i_example, 'param_map'};
-    trait = mig1d_subset{i_example, 'trait'}{1};
+    param = mig1d_goodfit{i_example, 'param_map'};
+    trait = mig1d_goodfit{i_example, 'trait'}{1};
+    subplot(n_row, n_col, i_example)
+
     % mapping fit type with jobtags
-    if regexp(mig1d_subset{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
+    if regexp(mig1d_goodfit{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
         fit_type = 'one_row';
-    elseif regexp(mig1d_subset{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
+        [mig1d_conc_Glu_list.row(i_row,:,:), mig1d_conc_Gal_list.row(i_row,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_row = i_row + 1;
+    elseif regexp(mig1d_goodfit{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
         fit_type = 'one_column';
-    elseif regexp(mig1d_subset{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
+        [mig1d_conc_Glu_list.col(i_col,:,:), mig1d_conc_Gal_list.col(i_col,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_col = i_col + 1;
+    elseif regexp(mig1d_goodfit{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
         fit_type = 'one_cross';
+        [mig1d_conc_Glu_list.cross(i_cross,:,:), mig1d_conc_Gal_list.cross(i_cross,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_cross = i_cross + 1;
     end
     
-    subplot(n_row, n_col, i_example)
-    param_fitting_plot(param, trait, fit_type)
 end
-export_fig(fullfile('../results/param_sanity_check_plot/', 'mig1d-fitting'));
+export_fig(fullfile('../results/param_sanity_check_plot/', 'filtered-mig1d-fitting'));
 
 %% show how parameters fit gal80d data
 gal80d_jobtags = {'gal80d_1c', 'gal80d_1r', 'gal80d_1r1c'};
 gal80d_subset = mcmc_result(ismember(mcmc_result.jobtag, gal80d_jobtags),:);
 gal80d_subset = sortrows(gal80d_subset, 'jobtag');
+gal80d_goodfit = gal80d_subset(gal80d_subset.param_prob_map > thresh, :);
 
-n_example = height(gal80d_subset);
+n_example = height(gal80d_goodfit);
 n_row = floor(n_example ^0.5);
 n_col = ceil(n_example / n_row);
+
+gal80d_conc_Glu_list = struct();
+gal80d_conc_Gal_list = struct();
+i_row = 1;
+i_col = 1;
+i_cross = 1;
 
 figure
 set(gcf, 'position', [401 155 1262 757]);
 for i_example = 1:n_example
-    param = gal80d_subset{i_example, 'param_map'};
-    trait = gal80d_subset{i_example, 'trait'}{1};
+    param = gal80d_goodfit{i_example, 'param_map'};
+    trait = gal80d_goodfit{i_example, 'trait'}{1};
+    subplot(n_row, n_col, i_example)
+
     % mapping fit type with jobtags
-    if regexp(gal80d_subset{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
+    if regexp(gal80d_goodfit{i_example, 'jobtag'}{1}, '\w*_1r$') % match words ending with 1r
         fit_type = 'one_row';
-    elseif regexp(gal80d_subset{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
+        [gal80d_conc_Glu_list.row(i_row,:,:), gal80d_conc_Gal_list.row(i_row,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_row = i_row + 1;
+    elseif regexp(gal80d_goodfit{i_example, 'jobtag'}{1}, '\w*_1c$') % match words ending with 1c
         fit_type = 'one_column';
-    elseif regexp(gal80d_subset{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
+        [gal80d_conc_Glu_list.col(i_col,:,:), gal80d_conc_Gal_list.col(i_col,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_col = i_col + 1;
+    elseif regexp(gal80d_goodfit{i_example, 'jobtag'}{1}, '\w*_1r1c$')   % match words ending with 1r1c
         fit_type = 'one_cross';
+        [gal80d_conc_Glu_list.cross(i_cross,:,:), gal80d_conc_Gal_list.cross(i_cross,:,:)] = param_fitting_plot(param, trait, fit_type);
+        i_cross = i_cross + 1;
     end
     
-    subplot(n_row, n_col, i_example)
-    param_fitting_plot(param, trait, fit_type)
 end
-export_fig(fullfile('../results/param_sanity_check_plot/', 'gal80d-fitting'));
+export_fig(fullfile('../results/param_sanity_check_plot/', 'filtered-gal80d-fitting'));
 
 %% consolidate all parameters
-% all wildtype parameters
+
+% all wildtype good fitting parameters
 load(wt_subset{1,'filepath'}{1}, 'parameter_update');
 param_update_names_wt = parameter_update.parameter_name;
-n_chain = height(wt_subset);
 n_update_param_wt = length(param_update_names_wt);
-map_param_vals_wt = nan(n_chain, n_update_param_wt);
+map_param_vals_wt = nan(height(wt_goodfit), n_update_param_wt);
 
 % parameter values in log10 scale
-for i_chain = 1:n_chain
-    param_map = wt_subset{i_chain, 'param_map'};
+for i_chain = 1:height(wt_goodfit)
+    param_map = wt_goodfit{i_chain, 'param_map'};
     for i_param = 1:n_update_param_wt
         map_param_vals_wt(i_chain, i_param) = log10(param_map.(param_update_names_wt{i_param}));
     end
@@ -123,30 +154,28 @@ end
 n_row = floor(n_update_param_wt ^0.5);
 n_col = ceil(n_update_param_wt / n_row);
 
-% all mig1d parameters
+% all mig1d good fitting parameters
 load(mig1d_subset{1,'filepath'}{1}, 'parameter_update');
 param_update_names_mig1d = parameter_update.parameter_name;
-n_chain = height(mig1d_subset);
 n_update_param_mig1d = length(param_update_names_mig1d);
-map_param_vals_mig1d = nan(n_chain, n_update_param_mig1d);
+map_param_vals_mig1d = nan(height(mig1d_goodfit), n_update_param_mig1d);
 
 % parameter values in log10 scale
-for i_chain = 1:n_chain
+for i_chain = 1:height(mig1d_goodfit)
     param_map = mig1d_subset{i_chain, 'param_map'};
     for i_param = 1:n_update_param_mig1d
         map_param_vals_mig1d(i_chain, i_param) = log10(param_map.(param_update_names_mig1d{i_param}));
     end
 end
 
-% all gal80d parameters
+% all gal80d good fitting parameters
 load(gal80d_subset{1,'filepath'}{1}, 'parameter_update');
 param_update_names_gal80d = parameter_update.parameter_name;
-n_chain = height(gal80d_subset);
 n_update_param_gal80d = length(param_update_names_gal80d);
-map_param_vals_gal80d = nan(n_chain, n_update_param_gal80d);
+map_param_vals_gal80d = nan(height(gal80d_goodfit), n_update_param_gal80d);
 
 % parameter values in log10 scale
-for i_chain = 1:n_chain
+for i_chain = 1:height(gal80d_goodfit)
     param_map = gal80d_subset{i_chain, 'param_map'};
     for i_param = 1:n_update_param_gal80d
         map_param_vals_gal80d(i_chain, i_param) = log10(param_map.(param_update_names_gal80d{i_param}));
