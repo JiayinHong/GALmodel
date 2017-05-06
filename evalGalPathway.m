@@ -29,5 +29,11 @@ induction_level = y_ss_Gal(:,1);
 
 [output.sum_obj, output.simulation_result_linear, output.experiment_result_linear] = calculate_obj( trait, basal_level, induction_level );
 
+% autofluorescence = get_auto_fluorescence(trait);
+% output.all_conc_Glu = y_ss_Glu + autofluorescence; 
+% output.all_conc_Gal = y_ss_Gal + autofluorescence; 
+output.all_conc_Glu = y_ss_Glu; % all 12 variables concentration at steady state, initial from Glu only condition
+output.all_conc_Gal = y_ss_Gal; % all 12 variables concentration at steady state, initial from Gal only condition
+
 end
 

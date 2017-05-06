@@ -1,9 +1,10 @@
-function  param_fitting_plot( param, trait, fit_type )
+function  [ all_conc_Glu, all_conc_Gal ] = param_fitting_plot( param, trait, fit_type )
 % this version works for single gradient, one row, one column, 
 % or one cross of double gradient data
 
 output = evalGalPathway( param, trait, fit_type );
-markersize = 5;
+all_conc_Glu = output.all_conc_Glu;
+all_conc_Gal = output.all_conc_Gal;
 
 switch fit_type
     case 'one_row'
@@ -25,8 +26,11 @@ eval_tab = table(output.experiment_result_linear(:,1)...
     , trait{index_list, 'mask_induction'}...
     , sugar_ratio...
     , 'VariableNames', {'exp_basal', 'exp_induce', 'sim_basal', 'sim_induce', 'mask_basal', 'mask_induce', 'sugar_ratio'});
+
 eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
+
 n_condition = height(eval_tab);
+markersize = 5;
 
 for i_condition = 1:n_condition
     if eval_tab{i_condition, 'mask_basal'}
