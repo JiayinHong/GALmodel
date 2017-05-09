@@ -3,8 +3,12 @@ function  [ all_conc_Glu, all_conc_Gal ] = param_fitting_plot( param, trait, fit
 % or one cross of double gradient data
 
 output = evalGalPathway( param, trait, fit_type );
-all_conc_Glu = output.all_conc_Glu;
-all_conc_Gal = output.all_conc_Gal;
+% all_conc_Glu = output.all_conc_Glu;   
+% all_conc_Gal = output.all_conc_Gal;
+
+% it was a bug since the sequence of output.all_conc_Glu is in the original
+% one as the trait (unsorted), I fixed it by sorting all_conc_Glu in the
+% sequence as sugar_ratio ascending
 
 switch fit_type
     case 'one_row'
@@ -26,6 +30,19 @@ eval_tab = table(output.experiment_result_linear(:,1)...
     , trait{index_list, 'mask_induction'}...
     , sugar_ratio...
     , 'VariableNames', {'exp_basal', 'exp_induce', 'sim_basal', 'sim_induce', 'mask_basal', 'mask_induce', 'sugar_ratio'});
+
+%%%%%%%% an example showing how to use sort id %%%%%%%%
+
+% example:  [~,id] = sort(sugar_ratio);
+% sorted_sugar_ratio = sugar_ratio(id);
+% [~,id2] = sort(id);    % id2 is used to sort back to the original sequence
+% sort_back_sugar_ratio = sorted_sugar_ratio(id2);
+% 'sort_back_sugar_ratio' is exact 'sugar_ratio'
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[~,id] = sort(eval_tab.sugar_ratio, 'ascend');
+all_conc_Glu = output.all_conc_Glu(id, :);
+all_conc_Gal = output.all_conc_Gal(id, :);
 
 eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
 
