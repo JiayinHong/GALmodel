@@ -4,6 +4,7 @@ function output = getInitParamsGalPathway( param )
 load_global;
 % opt = odeset('NonNegative',1:12);
 opt = [];
+% opt = odeset('AbsTol', 1e-12, 'RelTol', 1e-12);
 
 % generate seed param for starting from GLUCOSE only state
 param.exglu = 0.25*perc_to_nm;
