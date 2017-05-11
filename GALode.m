@@ -1,7 +1,7 @@
 function dydt = GALode( t, y, param )
 % 2017.4.20 GAL model v1.0
 
-y = max(y,0);  % solve the negative value problem
+% y = max(y,0);  % solve the negative value problem
 % this is more efficient than y(y<0)=0
 
 % define variables
@@ -89,8 +89,8 @@ dMig1 = aR - Mig1star_f + Mig1star_r - d * Mig1;
 dMig1s = Mig1star_f - Mig1star_r - d * Mig1s;
 dC83 = C83_f - C83_r - d * C83;
 dC84 = C84_f - C84_r - d * C84;
-dglu = kglu * exglu/(KMglu/KMgal * exgal + exglu + KMglu) - dsugar * glu;
-dgal = kgal * exgal/(KMgal/KMglu * exglu + exgal + KMgal) - dsugar * gal;
+dglu = kglu * exglu/(KMglu/KMgal * exgal + exglu + KMglu) - Mig1star_f + Mig1star_r - dsugar * glu;
+dgal = kgal * exgal/(KMgal/KMglu * exglu + exgal + KMgal) - G3star_f + G3star_r  - dsugar * gal;
 
 dydt = ...
     [ dG1 ...
