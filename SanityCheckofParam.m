@@ -663,10 +663,3 @@ suplabel(changeunderscore('S.S.conc_one_cross_all_update'), 't');
 export_fig(fullfile('../results/param_sanity_check_plot/', 'S.S.conc_one_cross_all_update'));
 
 
-%% part II - fminsearch
-% load data
-
-
-
-
-
