@@ -9,61 +9,61 @@ n_propose = 100000;     % run for 100,000 iterations
 %% generate config .mat files that only fit one column
 
 load('../metaData/trait_extraction/mig1d_1c.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.aR = 0;
-parameter_update = readtable('MCMC_parameter_config_mig1d.csv');
+parameter_update = readtable('MCMC_parameter_config_mig1d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'mig1d_1c');
 
 load('../metaData/trait_extraction/gal80d_1c.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.a80 = 0;
 base_param.ag80 = 0;
-parameter_update = readtable('MCMC_parameter_config_gal80d.csv');
+parameter_update = readtable('MCMC_parameter_config_gal80d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1c');
 
 load('../metaData/trait_extraction/wildtype_1c.mat')
-base_param = set_parameter(2);
-parameter_update = readtable('MCMC_parameter_config_wt.csv');
+base_param = set_parameter(1);
+parameter_update = readtable('MCMC_parameter_config_wt_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1c');
 
 %% generate config .mat files that only fit one row
 
 load('../metaData/trait_extraction/mig1d_1r.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.aR = 0;
-parameter_update = readtable('MCMC_parameter_config_mig1d.csv');
+parameter_update = readtable('MCMC_parameter_config_mig1d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'mig1d_1r');
 
 load('../metaData/trait_extraction/gal80d_1r.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.a80 = 0;
 base_param.ag80 = 0;
-parameter_update = readtable('MCMC_parameter_config_gal80d.csv');
+parameter_update = readtable('MCMC_parameter_config_gal80d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1r');
 
 load('../metaData/trait_extraction/wildtype_1r.mat')
-base_param = set_parameter(2);
-parameter_update = readtable('MCMC_parameter_config_wt.csv');
+base_param = set_parameter(1);
+parameter_update = readtable('MCMC_parameter_config_wt_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1r');
 
 %% generate config .mat files that fit one cross
 
 load('../metaData/trait_extraction/mig1d_1r1c.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.aR = 0;
-parameter_update = readtable('MCMC_parameter_config_mig1d.csv');
+parameter_update = readtable('MCMC_parameter_config_mig1d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'mig1d_1r1c');
 
 load('../metaData/trait_extraction/gal80d_1r1c.mat')
-base_param = set_parameter(2);
+base_param = set_parameter(1);
 base_param.a80 = 0;
 base_param.ag80 = 0;
-parameter_update = readtable('MCMC_parameter_config_gal80d.csv');
+parameter_update = readtable('MCMC_parameter_config_gal80d_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1r1c');
 
 load('../metaData/trait_extraction/wildtype_1r1c.mat')
-base_param = set_parameter(2);
-parameter_update = readtable('MCMC_parameter_config_wt.csv');
+base_param = set_parameter(1);
+parameter_update = readtable('MCMC_parameter_config_wt_set1.csv');
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1r1c');
 
 %% generate shell script for calling mcmc function to run on LSF cluster
