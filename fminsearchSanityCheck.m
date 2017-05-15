@@ -40,8 +40,8 @@ mig1d_array = mig1d_array';
 gal80d_array = gal80d_array';
 
 %% show how parameters fit wildtype data
-base_param = set_parameter(2);
-wt_param_update = readtable('MCMC_parameter_config_wt.csv');
+base_param = set_parameter(1);
+wt_param_update = readtable('MCMC_parameter_config_wt_set1.csv');
 parameter_name = wt_param_update.parameter_name;
 load('../metaData/trait_extraction/wildtype_1r.mat');
 wt_trait_1r = trait;
@@ -113,8 +113,9 @@ suplabel('filtered-wildtype-fitting', 't');
 export_fig(fullfile('../results/fminsearch_sanity_check_plot/', 'filtered-wildtype-fitting'));
 
 %% show how parameters fit mig1d data
-base_param = set_parameter(2);
-mig1d_param_update = readtable('MCMC_parameter_config_mig1d.csv');
+base_param = set_parameter(1);
+base_param.aR = 0;
+mig1d_param_update = readtable('MCMC_parameter_config_mig1d_set1.csv');
 parameter_name = mig1d_param_update.parameter_name;
 load('../metaData/trait_extraction/mig1d_1r.mat');
 mig1d_trait_1r = trait;
@@ -186,8 +187,10 @@ suplabel('filtered-mig1d-fitting', 't');
 export_fig(fullfile('../results/fminsearch_sanity_check_plot/', 'filtered-mig1d-fitting'));
 
 %% show how parameters fit gal80d data
-base_param = set_parameter(2);
-gal80d_param_update = readtable('MCMC_parameter_config_gal80d.csv');
+base_param = set_parameter(1);
+base_param.a80 = 0;
+base_param.ag80 = 0;
+gal80d_param_update = readtable('MCMC_parameter_config_gal80d_set1.csv');
 parameter_name = gal80d_param_update.parameter_name;
 load('../metaData/trait_extraction/gal80d_1r.mat');
 gal80d_trait_1r = trait;
