@@ -48,7 +48,7 @@ switch param_set_i
         % from experimental data
         param.a1 = 0;
         param.a2 = 0;
-        param.a3 = 0.25;
+        param.a3 = 0.25 * 2;
         param.a4 = 0.058;
         param.a80 = 0.272;
         param.aR = 0.288;
@@ -58,15 +58,16 @@ switch param_set_i
         param.ag4 = 0.011;
         param.ag80 = 0.735;
         param.d = 0.0077;
-        param.dsugar = 0.077;   % no experimental data available
+%         param.dsugar = 0.077;   % no experimental data available
+        param.dsugar = 7;
         
         % the following association rate and dissociation rate referred to
         % Venturelli's model
         param.kf3 = 70.3;
         param.kr3 = 3391;
-        param.kf83 = 41.1;
+        param.kf83 = 41.1 * 1000;
         param.kr83 = 700.1;
-        param.kf84 = 95.2;
+        param.kf84 = 95.2 * 10;
         param.kr84 = 1237;
         param.kfR = 56.2;
         param.krR = 3564;
