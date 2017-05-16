@@ -27,5 +27,26 @@ for i_init = 1:n_init
         )
 end
 
+% the following part is to check when sigma is equal to zero, if the
+% generated value is what it is supposed to be
+
+% for i_init = 1:n_init
+%     parameter_val = nan(height(parameter_update), 1);
+%     for i = 1:height(parameter_update)
+%         parameter_val(i) = random('lognormal', ...
+%             log(parameter_update{i, 'prior_mean'}), ...
+%             0 ...
+%             );
+%     end
+%     param_init = update_param(base_param, parameter_update.parameter_name, parameter_val);
+%     
+%     save(fullfile(folder_random_init, [jobtag, num2str(i_init, '_%03d'), '.mat'])...
+%         , 'parameter_update', 'param_init' ...
+%         , 'error_tol', 'n_propose' ...
+%         , 'trait' ...
+%         , 'jobtag'...
+%         )
+% end
+
 end
 
