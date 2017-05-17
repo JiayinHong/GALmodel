@@ -46,7 +46,8 @@ switch param_set_i
     case 1      % parameter set I is inferred from reference
         % the following production rate and dilution rate are estimated
         % from experimental data
-        param.a1 = 0;
+%         param.a1 = 0;
+        param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
         param.a2 = 0;
         param.a3 = 0.25 * 2;
         param.a4 = 0.058;
