@@ -12,6 +12,11 @@ end
 for i_init = 1:n_init
     parameter_val = nan(height(parameter_update), 1);
     for i = 1:height(parameter_update)
+        % add the following line to make sure even if I forget to change
+        % the csv config file, the prior mean will be updated, based on the
+        % base parameter value
+        parameter_update{i, 'prior_mean'} = base_param.(parameter_update{i, 'parameter_name'}{1});
+        
         parameter_val(i) = random('lognormal', ...
             log(parameter_update{i, 'prior_mean'}), ...
             parameter_update{i, 'prior_sigma'} ...
