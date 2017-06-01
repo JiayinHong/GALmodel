@@ -39,7 +39,7 @@ add_val = base_val * (1+percent_to_change);
 min_val = base_val * (1-percent_to_change);
 
 % make subplot for increased values
-param.param_name = add_val;
+param.(param_name) = add_val;
 subplot(3,3,4)
 param_fitting_plot(param, wt_trait_1c, 'one_column');
 ylabel(sprintf('increase by %.0f%%', 100 * percent_to_change), ...
@@ -50,7 +50,7 @@ subplot(3,3,6)
 param_fitting_plot(param, wt_trait_1r1c, 'one_cross');
 
 % make subplot for decreased values
-param.param_name = min_val;
+param.(param_name) = min_val;
 subplot(3,3,7)
 param_fitting_plot(param, wt_trait_1c, 'one_column');
 ylabel(sprintf('decrease by %.0f%%', 100 * percent_to_change), ...
@@ -63,6 +63,7 @@ param_fitting_plot(param, wt_trait_1r1c, 'one_cross');
 % suplabel('base line, increase, decrease', 'y');
 [~,h1] = suplabel(sprintf('%s, base value = %.3e', param_name, base_val), 't');
 set(h1, 'FontSize', 18)
+export_fig(fullfile('../results/param_sensitivity_analysis/', sprintf('%s sensitivity analysis', param_name)));
 
 end
 
