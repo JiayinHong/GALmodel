@@ -118,7 +118,11 @@ title(sprintf('base: %1.2f, inc: %1.2f, dec: %1.2f', base_obj, inc_obj, dec_obj)
 
 [~,h1] = suplabel(sprintf('%s', param_name),'t');
 set(h1, 'FontSize', 18, 'FontName', 'Helvetica')
-export_fig(fullfile('../results/param_sensitivity_analysis2/', sprintf('%s sensitivity analysis', param_name)));
+outpath = fullfile('../results/param_sensitivity_analysis2/', sprintf('vary_by_%.2f/', percent_to_change));
+if ~exist(outpath)
+    mkdir(outpath)
+end
+export_fig(fullfile(outpath, sprintf('%s sensitivity analysis', param_name)));
 
 end
 
