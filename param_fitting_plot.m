@@ -69,7 +69,7 @@ plot(eval_tab{:,'sim_basal'}, 'k-', 'linewidth', 2)
 plot(eval_tab{:,'sim_induce'}, 'r-', 'linewidth', 2)
 set(gca, 'yscale', 'log')
 xlim([0, n_condition+1])
-title(sprintf('%s - obj : %1.2f', changeunderscore(fit_type), output.sum_obj))
+title(sprintf('%s - obj : %1.4f', changeunderscore(fit_type), output.sum_obj))
 % title(num2str(output.sum_obj, 'obj: %1.2f'))
 
 
