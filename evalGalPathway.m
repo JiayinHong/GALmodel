@@ -6,23 +6,33 @@ output = getInitParamsGalPathway(param);
 
 if nargin == 3
     
-    switch fit_type
-        case 'one_row'
-            index_list = [4:8:92];
-        case 'one_column'
-            index_list = [65:72];
-        case 'one_cross'
-            index_list = [4:8:60,65:72,76,84,92];
-        case 'single_gradient'
-            index_list = [1:12];
-    end
-    
+%     switch fit_type
+%         case 'one_row'
+%             index_list = [4:8:92];
+%         case 'one_column'
+%             index_list = [65:72];
+%         case 'one_cross'
+%             index_list = [4:8:60,65:72,76,84,92];
+%         case 'single_gradient'
+%             index_list = [1:12];
+%     end
+    fit_type_config;
+
     trait = trait(index_list,:);
 end
 
 y_ss_Glu = evalMultiSugarConcentrations( param, output.y0_Glu, trait.gluc, trait.galc );
 y_ss_Gal = evalMultiSugarConcentrations( param, output.y0_Gal, trait.gluc(end:-1:1), trait.galc(end:-1:1) );
 y_ss_Gal = y_ss_Gal(end:-1:1,:);
+
+% y_ss_Glu_init = evalMultiSugarConcentrations( param, output.y0_Glu, trait.gluc(1), trait.galc(1) );
+% y_ss_Gal_init = evalMultiSugarConcentrations( param, output.y0_Gal, trait.gluc(end), trait.galc(end) );
+% y_ss_Gal_init(1) = y_ss_Glu_init(1);
+% 
+% y_ss_Glu = evalMultiSugarConcentrations( param, y_ss_Glu_init, trait.gluc(2:end), trait.galc(2:end) );
+% y_ss_Glu = [y_ss_Glu_init; y_ss_Glu];
+% y_ss_Gal = evalMultiSugarConcentrations( param, y_ss_Gal_init, trait.gluc(end-1:-1:1), trait.galc(end-1:-1:1) );
+% y_ss_Gal = [y_ss_Gal_init; y_ss_Gal(end:-1:1,:)];
 
 basal_level = y_ss_Glu(:,1);
 induction_level = y_ss_Gal(:,1);

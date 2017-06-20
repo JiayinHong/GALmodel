@@ -102,4 +102,59 @@ switch param_set_i
         
     case 2      % the current default values, manually tuned from set I.
         % do nothing
+        
+    case 3      % to study why varing d value turns out flat curve of Gal1 level in different sugar conditions
+        
+        param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
+        param.a2 = 0;
+        param.a3 = 0.25 * 2;
+        param.a4 = 0.058;
+        param.a80 = 0.272;
+        param.aR = 0.288;
+        param.ag1 = 51.77;
+        param.ag2 = 24.36;      % no experimental data available
+        param.ag3 = 2.045;
+        param.ag4 = 0.011;
+        param.ag80 = 0.735;
+        param.d = 0.1493;       
+%         param.dsugar = 0.077;   % no experimental data available
+        param.dsugar = 7;
+        
+        % the following association rate and dissociation rate referred to
+        % Venturelli's model
+        param.kf3 = 70.3;
+        param.kr3 = 3391;
+        param.kf83 = 41.1 * 1000;
+        param.kr83 = 700.1;
+        param.kf84 = 95.2 * 10;
+        param.kr84 = 1237;
+        param.kfR = 56.2;
+        param.krR = 3564;
+        
+        % the following transcription KMs referred to Venturelli's model
+        param.KG1 = 41.6;
+        param.KG2 = 66.6;       % no experimental data available
+        param.KG3 = 32.2;       % no experimental data available
+        param.KG80 = 14;
+        param.KR1 = 67.4;
+        param.KR3 = 18.8;       % no experimental data available
+        param.KR4 = 33.8;
+        
+        % the following sugar transportation rate and KMs referred to
+        % Bennett's model, the KMs were adapted based on experimental data
+        param.kglu = 4350;
+        param.kgal = 4350;
+        param.KMglu = 7.5*10^5;
+        param.KMgal = 3*10^6;
+        % param.KM1 = 7.5*10^5;
+        % param.KM2 = 3*10^6;
+        
+        % the following Hill coefficient referred to Venturelli's model
+        param.n1 = 3;
+        param.n2 = 3;       % no experimental data available
+        param.n3 = 2;
+        param.n80 = 2;
+        param.nR1 = 2;
+        param.nR3 = 2;      % no experimental data available
+        param.nR4 = 1;
 end

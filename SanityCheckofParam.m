@@ -6,6 +6,7 @@ jobtags = {'wildtype_1c', 'mig1d_1c', 'gal80d_1c', ...
     'wildtype_1r1c', 'mig1d_1r1c', 'gal80d_1r1c'};
 mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
 
+%% all update parameters trials
 all_update_jobtags = {'all_update_mig1d_1c', 'all_update_gal80d_1c', ...
     'all_update_mig1d_1r', 'all_update_gal80d_1r', ...
     'all_update_mig1d_1r1c', 'all_update_gal80d_1r1c'};
@@ -190,7 +191,7 @@ for i_chain = 1:height(gal80d_goodfit)
     end
 end
 
-% prepare a color palette
+%% prepare a color palette
 CT = cbrewer('qual', 'Dark2', 8);
 c_wt = CT(1,:);
 c_mig1d = CT(2,:);
@@ -278,13 +279,14 @@ suplabel(changeunderscore('wt_compare_with_gal80d_filtered'), 't');
 export_fig(fullfile('../results/param_sanity_check_plot/', 'wt_compare_with_gal80d_filtered'));
 
 %% scatter plot of the parameter values across wt, mig1d and gal80d
+xlimub = max([size(map_param_vals_gal80d,1), size(map_param_vals_mig1d,1), size(map_param_vals_wt,1)]);
 figure
 set(gcf, 'position', [298 107 1259 822])
 for i_param = 1:n_update_param_wt
     subplot(n_row, n_col, i_param)
     plot(map_param_vals_wt(:, i_param), '.', 'color', c_wt, 'markersize', 15)
     hold on
-    xlim([0 size(map_param_vals_wt,1)])
+    xlim([0 xlimub+1])
     title(param_update_names_wt{i_param})
     grid on
 end
@@ -351,7 +353,7 @@ suplabel(changeunderscore('S.S.conc_one_column'), 't');
 % export figure
 export_fig(fullfile('../results/param_sanity_check_plot/', 'S.S.conc_one_column'));
 
-% plot the steady state concentrations for one row, only plot ON state
+%% plot the steady state concentrations for one row, only plot ON state
 figure
 set(gcf, 'position', [298 107 1259 822])
 % plot wild-type
