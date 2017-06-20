@@ -2,8 +2,9 @@ function output = getInitParamsGalPathway( param )
 % this function is used to get the initial value for ON/OFF state
 
 load_global;
-% opt = odeset('NonNegative',1:12);
-opt = [];
+opt = odeset('NonNegative',1:12);
+accurate_thresh = 10^-8;
+% opt = [];
 % opt = odeset('AbsTol', 1e-12, 'RelTol', 1e-12);
 
 % generate seed param for starting from GLUCOSE only state
@@ -17,7 +18,8 @@ tmp(6) = 0;     % Gal3*
 tmp(9) = 0;     % C83
 tmp(12) = 0;    % intracellular galactose
 % tmp = [0, ones(1,4),0,1,1,0,1,1,0];
-[~, y] = ode15s( odefunc, [0 100000], tmp, opt);
+[~, y] = ode15s( odefunc, [0 10000], tmp, opt);
+y(y<accurate_thresh) = 0;   % omit values that are too small
 y0_Glu=y(end,:);
 
 % generate seed param for starting from GALACTOSE only state
@@ -30,7 +32,8 @@ tmp(1) = 0;     % Gal1
 tmp(8) = 0;     % R*
 tmp(11) = 0;    % intracellular glucose
 % tmp = [0, ones(1,6),0,1,1,0,1];
-[~, y] = ode15s( odefunc, [0 100000], tmp, opt);
+[~, y] = ode15s( odefunc, [0 10000], tmp, opt);
+y(y<accurate_thresh) = 0;   
 y0_Gal=y(end,:);
 
 y0_Gal(1) = y0_Glu(1); % make sure GAL1 initial value is low so that we can visualize the result
