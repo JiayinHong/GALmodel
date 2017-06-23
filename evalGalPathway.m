@@ -20,7 +20,10 @@ if nargin == 3
 
     trait = trait(index_list,:);
 end
-
+%%%%%%%%%%%%%%%%%
+% output.y0_Glu = [0.9411 7.0453e-05 111.4866 0.1766 152.0683 0 0 0 0 22.9261 5.5329e+03 0];
+% output.y0_Gal = [0.9411 114.0955 35.8294 20.9579 0.1199 37.8327 0 0 196.7760 2.1448 0 35.0351];
+%%%%%%%%%%%%%%%%
 y_ss_Glu = evalMultiSugarConcentrations( param, output.y0_Glu, trait.gluc, trait.galc );
 y_ss_Gal = evalMultiSugarConcentrations( param, output.y0_Gal, trait.gluc(end:-1:1), trait.galc(end:-1:1) );
 y_ss_Gal = y_ss_Gal(end:-1:1,:);

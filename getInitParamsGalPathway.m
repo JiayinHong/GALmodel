@@ -8,7 +8,9 @@ accurate_thresh = 10^-8;
 % opt = odeset('AbsTol', 1e-12, 'RelTol', 1e-12);
 
 % generate seed param for starting from GLUCOSE only state
-param.exglu = 0.25*perc_to_nm;
+% param.exglu = 0.25*perc_to_nm;
+param.exglu = 2*perc_to_nm;     % to solve the bifurcation problem
+% param.exglu = 4*perc_to_nm;
 param.exgal = 0;
 odefunc = @(t,y)GALode(t,y,param);
 % when exgal==0 -> Gal3*=0, C83=0, gal=0
@@ -24,7 +26,9 @@ y0_Glu=y(end,:);
 
 % generate seed param for starting from GALACTOSE only state
 param.exglu = 0;
-param.exgal = 0.25*perc_to_nm;
+% param.exgal = 0.25*perc_to_nm;
+param.exgal = 2*perc_to_nm;     % i.e. sometimes the local and cluster got different results
+% param.exgal = 4*perc_to_nm;
 odefunc = @(t,y)GALode(t,y,param);
 % when exglu==0 -> R*=0, glu=0
 tmp = ones(1,12);
