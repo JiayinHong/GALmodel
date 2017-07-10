@@ -37,7 +37,7 @@ for i_condition = 1:n_condition
         curInitVal = curInitVal .* tmp;
     end
     
-    [~, y_current] = ode15s( odefunc, [0 10000], curInitVal, opt);
+    [~, y_current] = ode15s(odefunc, [0 10000], curInitVal, opt);
     y_current(y_current<accurate_thresh) = 0;   % omit values that are too small
     y_ss_list(i_condition,:) = y_current(end,:);
     
