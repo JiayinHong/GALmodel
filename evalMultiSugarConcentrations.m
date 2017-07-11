@@ -5,8 +5,9 @@ n_condition = length(gluc_condition);
 y_ss_list = nan(n_condition, n_var);
 
 load_global;
-% opt = odeset('NonNegative',1:12);
-opt = [];
+opt = odeset('NonNegative',1:12);
+accurate_thresh = 10^-8;
+% opt = [];
 
 for i_condition = 1:n_condition
     
@@ -36,7 +37,8 @@ for i_condition = 1:n_condition
         curInitVal = curInitVal .* tmp;
     end
     
-    [~, y_current] = ode15s( odefunc, [0 100000], curInitVal, opt);
+    [~, y_current] = ode15s(odefunc, [0 10000], curInitVal, opt);
+    y_current(y_current<accurate_thresh) = 0;   % omit values that are too small
     y_ss_list(i_condition,:) = y_current(end,:);
     
     %     % the previous version of ode solver, consider to delete
