@@ -30,6 +30,19 @@ for algorithm = algorithm_list
     end
 end
 
+%% re-run MCMC to fit BC&YJM glucose gradient data
+algorithm = 'mcmc';
+jobtag_list = {'BC187', 'YJM978'};
+folder_name = '../metaData/BCandYJM_single_grad';
+
+for jobtag = jobtag_list
+    jobtag = jobtag{1};
+    
+    fit_type = 'gluc_gradient';
+    
+    shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
+end
+
 %% test what if we don't force aR=0 or a80=0, ag80=0, using mcmc
 jobtag_list = {'all_update_mig1d_1r', 'all_update_gal80d_1r', ...
     'all_update_mig1d_1c', 'all_update_gal80d_1c', ...

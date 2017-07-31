@@ -9,7 +9,10 @@ if strcmp(folder_name, '../metaData/mutant_and_wt_triple_fit')
 elseif strcmp(folder_name, '../metaData/random_init_mutant_and_wt')
 %     mcmc_without_prior( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
     mcmc_for_GAL234( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
-
+    
+elseif strcmp(folder_name, '../metaData/BCandYJM_single_grad')
+    mcmc_prior_included( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
+    
 else error('there''s something wrong, check folder name\n')
     
 end

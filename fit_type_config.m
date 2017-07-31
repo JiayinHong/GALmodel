@@ -5,6 +5,6 @@ switch fit_type
         index_list = [65:72];
     case 'one_cross'
         index_list = [4:8:60,65:72,76,84,92];
-    case 'single_gradient'
+    case 'gluc_gradient'
         index_list = [1:12];
 end

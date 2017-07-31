@@ -1,10 +1,16 @@
-function rand_init_generator( n_init, trait, n_propose, base_param, parameter_update, jobtag )
+function rand_init_generator( n_init, trait, n_propose, base_param, parameter_update, jobtag, folder )
 %   use this function to generate random initial state for later use like
 %   mcmc or fminsearch, given trait, base_param, parameter_update, jobtag etc. 
 %   this function is called by 'submit_to_orchestra'
 
 error_tol = .15;
-folder_random_init = '../metaData/random_init_mutant_and_wt';
+
+if nargin == 7
+    folder_random_init = folder;
+else
+    folder_random_init = '../metaData/random_init_mutant_and_wt';
+end
+    
 if ~exist(folder_random_init)
     mkdir(folder_random_init)
 end
