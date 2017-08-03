@@ -3,9 +3,12 @@
 %   for gal80d, we force a80=ag80=0, and keep them unchange;
 %   the other settings are the same to wt
 
-n_init = 200;     % 5 replicates
+n_init = 30;     % 5 replicates
 % n_propose = 1000000;     % run for 1000,000 iterations
-n_propose = 20000;
+n_propose = 100000;
+
+folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
+folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
 
 %% generate config .mat files from MAP parameters
 if 0
@@ -82,9 +85,17 @@ rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, jobt
 % rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1c');
 
 load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
+% parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
+
+% fit GAL1,3,4; let hill coefficients vary
 base_param = set_parameter(1);
-parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1c');
+parameter_update = readtable('Aug3rd_parameter_config_wt_set1.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'varyN-wildtype_1c', folder1);
+
+% set all hill coefficients equal to 1
+base_param = set_parameter(3);
+parameter_update = readtable('Aug3rd_parameter_config_wt_set3.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'sequestrate-wildtype_1c', folder2);
 
 %% generate config .mat files that only fit one row
 
@@ -102,9 +113,17 @@ rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wil
 % rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1r');
 
 load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+% parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
+
+% fit GAL1,3,4; let hill coefficients vary
 base_param = set_parameter(1);
-parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1r');
+parameter_update = readtable('Aug3rd_parameter_config_wt_set1.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'varyN-wildtype_1r', folder1);
+
+% set all hill coefficients equal to 1
+base_param = set_parameter(3);
+parameter_update = readtable('Aug3rd_parameter_config_wt_set3.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'sequestrate-wildtype_1r', folder2);
 
 %% generate config .mat files that fit one cross
 
@@ -122,9 +141,17 @@ rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wil
 % rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_1r1c');
 
 load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
+% parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
+
+% fit GAL1,3,4; let hill coefficients vary
 base_param = set_parameter(1);
-parameter_update = readtable('July2nd_parameter_config_wt_set1.csv');
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_1r1c');
+parameter_update = readtable('Aug3rd_parameter_config_wt_set1.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'varyN-wildtype_1r1c', folder1);
+
+% set all hill coefficients equal to 1
+base_param = set_parameter(3);
+parameter_update = readtable('Aug3rd_parameter_config_wt_set3.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'sequestrate-wildtype_1r1c', folder2);
 
 %% generate shell script for calling mcmc function to run on LSF cluster
 
