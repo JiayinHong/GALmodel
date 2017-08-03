@@ -87,7 +87,7 @@ switch param_set_i
         param.kglu = 4350;
         param.kgal = 4350;
         param.KMglu = 7.5*10^5;
-        param.KMgal = 3*10^6;
+        param.KMgal = 3*10^6 * 10;  % Aug1st update, more biological plausible
         % param.KM1 = 7.5*10^5;
         % param.KM2 = 3*10^6;
         
@@ -103,7 +103,7 @@ switch param_set_i
     case 2      % the current default values, manually tuned from set I.
         % do nothing
         
-    case 3      % to study why varing d value turns out flat curve of Gal1 level in different sugar conditions
+    case 3      % set all hill coefficients equal to one, essentially a pure sequestration model
         
         param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
         param.a2 = 0;
@@ -116,8 +116,7 @@ switch param_set_i
         param.ag3 = 2.045;
         param.ag4 = 0.011;
         param.ag80 = 0.735;
-        param.d = 0.1493;       
-%         param.dsugar = 0.077;   % no experimental data available
+        param.d = 0.0077;
         param.dsugar = 7;
         
         % the following association rate and dissociation rate referred to
@@ -145,16 +144,15 @@ switch param_set_i
         param.kglu = 4350;
         param.kgal = 4350;
         param.KMglu = 7.5*10^5;
-        param.KMgal = 3*10^6;
-        % param.KM1 = 7.5*10^5;
-        % param.KM2 = 3*10^6;
+        param.KMgal = 3*10^6 * 10;  % Aug1st update, more biological plausible
         
-        % the following Hill coefficient referred to Venturelli's model
-        param.n1 = 3;
-        param.n2 = 3;       % no experimental data available
-        param.n3 = 2;
-        param.n80 = 2;
-        param.nR1 = 2;
-        param.nR3 = 2;      % no experimental data available
+        % the following Hill coefficient all set to be one
+        param.n1 = 1;
+        param.n2 = 1;       % no experimental data available
+        param.n3 = 1;
+        param.n80 = 1;
+        param.nR1 = 1;
+        param.nR3 = 1;      % no experimental data available
         param.nR4 = 1;
+        
 end
