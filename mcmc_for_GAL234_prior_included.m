@@ -1,11 +1,23 @@
-function mcmc_prior_included( trait, param_init, parameter_update, fit_type, varargin )
-%   back to the original mcmc version, taking prior into account
-mcmc_version = 'prior included';
+function mcmc_for_GAL234_prior_included( GAL1_trait, param_init, parameter_update, fit_type, varargin )
+%   this function is a special version adapted from 'mcmc_prior_included'
+%   it calls 'evalGalPathway_GAL234' to evaluate how the parameters fit
+%   GAL1, GAL3 & GAL4 level.
+%   2017.08.01 by JH
+
+mcmc_version = 'AlsoFitGAL34-prior_included';
+
+% load('../metaData/trait_extraction/GAL2pr_all_data.mat')
+% GAL2level = trait.basal_level;
+GAL2level = 0;
+load('../metaData/trait_extraction/GAL3pr_all_data.mat')
+GAL3level = trait.basal_level;
+load('../metaData/trait_extraction/GAL4pr_all_data.mat')
+GAL4level = trait.basal_level;
 
 % input parser
 p = inputParser;
 
-addRequired(p,'trait',@istable);
+addRequired(p,'GAL1_trait',@istable);
 addRequired(p,'param_init',@isstruct);
 addRequired(p,'parameter_update',@istable);
 addRequired(p,'fit_type',@isstr);
@@ -17,9 +29,9 @@ addOptional(p,'jobtag','',@isstr);
 addOptional(p,'arrayid','',@isstr);
 addOptional(p,'allmovefrac',0,@isnumeric);
 
-parse(p, trait, param_init, parameter_update, fit_type, varargin{:});
+parse(p, GAL1_trait, param_init, parameter_update, fit_type, varargin{:});
 p = p.Results;
-trait = p.trait;
+GAL1_trait = p.GAL1_trait;
 param_init = p.param_init;
 parameter_update = p.parameter_update;
 fit_type = p.fit_type;
@@ -33,13 +45,13 @@ allmovefrac = p.allmovefrac;
 % setup output file and make sure path exist
 if isempty(outfilepath)
     % check to see if the folder exists
-    if ~isdir('../results/mcmc_prior_included/')
-        mkdir('../results/mcmc_prior_included/')
+    if ~isdir('../results/mcmc_for_GAL234-prior_included/')
+        mkdir('../results/mcmc_for_GAL234-prior_included/')
     end
     % Now set the file path
     task_id = str2double(arrayid);
     outfilepath = fullfile(...
-        '../results/mcmc_prior_included/', ...
+        '../results/mcmc_for_GAL234-prior_included/', ...
         sprintf(...
         '%s-%s-%s.mat', ...
         jobtag, num2str(task_id, '%03d'), ...
@@ -51,12 +63,12 @@ end
 % accessory parameters
 n_propose_write = 5;  % the interval of iterations to output results
 
-% define function to get prior probability of a given trait and param
+% define function to get prior probability of a given param
 get_prob_parameter_over_prior = @(param) get_param_prob(param, parameter_update);
 
 % init the loop
 param = param_init;
-prob_data_over_parameter = get_prob_data_over_parameter(param, trait, error_tol, fit_type);
+prob_data_over_parameter = get_prob_data_over_parameter(param, GAL1_trait, GAL2level, GAL3level, GAL4level, error_tol, fit_type);
 prob_parameter_over_prior = get_prob_parameter_over_prior(param);
 param_prob = prob_data_over_parameter + prob_parameter_over_prior;
 i_parameter_to_change = [];
@@ -79,7 +91,7 @@ parameter_updated_list = cell(n_propose, 1);
 
 % prep the output
 save(outfilepath ...
-    , 'trait' ...
+    , 'GAL1_trait' ...
     , 'param_init' ...
     , 'parameter_update' ...
     , 'error_tol' ...
@@ -140,7 +152,7 @@ for i_propose = 1:n_propose
     end
     
     % evaluate the prob
-    prob_data_over_parameter_new = get_prob_data_over_parameter(param_new, trait, error_tol, fit_type);
+    prob_data_over_parameter_new = get_prob_data_over_parameter(param_new, GAL1_trait, GAL2level, GAL3level, GAL4level, error_tol, fit_type);
     prob_parameter_over_prior_new = get_prob_parameter_over_prior(param_new);
     param_prob_new = prob_data_over_parameter_new + prob_parameter_over_prior_new;
     
@@ -150,6 +162,7 @@ for i_propose = 1:n_propose
     % evaluate whether accept or not
     accept_thre = param_prob_new - param_prob + relative_transition_prob;
     accept = random('uniform', 0, 1, 1) < exp(accept_thre);
+    
     if accept
         param = param_new;
         prob_data_over_parameter = prob_data_over_parameter_new;
@@ -225,19 +238,10 @@ for i = 1:height(parameter_update)
 end
 end
 
-function prob = get_prob_data_over_parameter(param, trait, error_tol, fit_type)
-try
-    output = evalGalPathway(param, trait, fit_type);
-    prob = - output.sum_obj / error_tol^2;
-    % simulation_result_linear = output.simulation_result_linear;
-catch ME
-    if (strcmp(ME.identifier,'galSim:istate'))
-        prob = -1000;
-        fprintf('\n\nwarning:evalGalPathway failed!\n')
-    else
-        error("get_prob_data_over_parameter failed!\n");
-    end
-end
+function prob = get_prob_data_over_parameter(param, GAL1_trait, GAL2level, GAL3level, GAL4level, error_tol, fit_type)
+
+output = evalGalPathway_GAL234(param, GAL1_trait, GAL2level, GAL3level, GAL4level, fit_type);
+prob = - output.sum_obj / error_tol^2;
 
 end
 
