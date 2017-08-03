@@ -9,6 +9,19 @@
 % GAL3pr-YFP, GAL4pr-YFP data to further constrain the model. Applied to
 % wildtype data only.
 
+%% fit GAL1, GAL3 & GAL4 - prior included version
+% medium step size
+mcmc_data_folder = '../results/mcmc_for_GAL234-prior_included';
+jobtags = {'varyN-wildtype_1c', 'varyN-wildtype_1r', 'varyN-wildtype_1r1c'...
+            , 'sequestrate-wildtype_1c', 'sequestrate-wildtype_1r', 'sequestrate-wildtype_1r1c'};
+mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, GAL3 & GAL4 - prior included version
+% small step size
+mcmc_data_folder = '../results/SmallStepSize-mcmc_for_GAL234-prior_included';
+jobtags = {'wildtype_1c', 'wildtype_1r', 'wildtype_1r1c'};
+mcmc_result_small_step = load_mcmc_result(mcmc_data_folder, jobtags);
+
 %% fit GAL1, GAL3 & GAL4
 mcmc_data_folder = '../results/mcmc_for_GAL234';
 jobtags = {'wildtype_1c', 'wildtype_1r', 'wildtype_1r1c'};
@@ -24,6 +37,9 @@ mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
 %% define a threshold for good fitting
 load(mcmc_result{1,'filepath'}{1}, 'error_tol');
 thresh = - 0.1 / error_tol ^2;  % i.e. obj < 0.1
+% set font size and marker size
+markersize = 10;
+fontsize = 12;
 
 %% first, show how parameters fit wildtype GAL1 level
 sorted_wt = sortrows(mcmc_result, 'jobtag');
@@ -63,7 +79,7 @@ for i_example = 1:n_example
     
 end
 [~,h] = suplabel('filtered-wildtype-fitting', 't');
-h.FontSize = 15;
+h.FontSize = fontsize;
 % export_fig(fullfile('../results/param_sanity_check_plot/', 'filtered-wildtype-fitting'));
 
 %% Then, show how the parameters fit GAL3, GAL4 level
@@ -95,7 +111,7 @@ for i_example = 1:n_example
     
 end
 [~,h] = suplabel('GAL3 level', 't');
-h.FontSize = 15;
+h.FontSize = fontsize;
 
 % plot G4
 FLAG = 'G4';
@@ -120,7 +136,7 @@ for i_example = 1:n_example
     
 end
 [~,h] = suplabel('GAL4 level', 't');
-h.FontSize = 15;
+h.FontSize = fontsize;
 
 %% all wildtype good fitting parameters
 load(sorted_wt{1,'filepath'}{1}, 'parameter_update');
@@ -140,8 +156,6 @@ n_row = floor(n_update_param_wt ^0.5);
 n_col = ceil(n_update_param_wt / n_row);
 
 %% scatter of parameter values of wildtype
-markersize = 18;
-fontsize = 12;
 n_chain = size(map_param_vals_wt,1);
 figure
 set(gcf, 'position', [298 107 1259 822])
