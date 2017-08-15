@@ -5,7 +5,13 @@ filepath = fullfile(folder_name, [jobtag, num2str(task_id, '_%03d'), '.mat']);
 load(filepath);
 if strcmp(folder_name, '../metaData/mutant_and_wt_triple_fit')
     simulateGALPathway( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
-
+    
+elseif strcmp(folder_name, '../metaData/fitGAL134-changeRform/')
+    mcmc_for_GAL234_prior_included( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
+    
+elseif strcmp(folder_name, '../metaData/fitGAL134-TestStepSize/')
+    mcmc_for_GAL234_prior_included( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
+    
 elseif strcmp(folder_name, '../metaData/Aug1st-fitGAL134-vary-n/')
     mcmc_for_GAL234_prior_included( trait, param_init, parameter_update, fit_type, 'n_propose', n_propose, 'jobtag', jobtag, 'arrayid', array_id );
     
