@@ -3,12 +3,75 @@
 %   for gal80d, we force a80=ag80=0, and keep them unchange;
 %   the other settings are the same to wt
 
-n_init = 30;     % 5 replicates
+n_init = 100;     % 5 replicates
 % n_propose = 1000000;     % run for 1000,000 iterations
-n_propose = 100000;
+n_propose = 50000;
 
-folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
-folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
+folder = '../metaData/fitGAL134-changeRform/';
+% folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
+% folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
+
+%% change the formula of Mig1, medium step size
+base_param = set_parameter(5);
+parameter_update = readtable('Aug8th_param_config_medium_set5.csv');
+% fit one column
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
+% fit one row
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+
+%% use alpha*KMglu to replace KMgal, test different step size
+% also use beta*kglu to replace kgal
+base_param = set_parameter(4);
+
+% fit one column
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
+
+% fit GAL1,3,4; let hill coefficients vary; small step size
+parameter_update = readtable('Aug5th_param_config_small_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'small-wildtype_1c', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; medium step size
+parameter_update = readtable('Aug5th_param_config_medium_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; large step size
+parameter_update = readtable('Aug5th_param_config_large_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'large-wildtype_1c', folder);
+
+
+% fit one row
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+
+% fit GAL1,3,4; let hill coefficients vary; small step size
+parameter_update = readtable('Aug5th_param_config_small_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'small-wildtype_1r', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; medium step size
+parameter_update = readtable('Aug5th_param_config_medium_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; large step size
+parameter_update = readtable('Aug5th_param_config_large_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'large-wildtype_1r', folder);
+
+
+% fit one cross
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
+
+% fit GAL1,3,4; let hill coefficients vary; small step size
+parameter_update = readtable('Aug5th_param_config_small_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'small-wildtype_1r1c', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; medium step size
+parameter_update = readtable('Aug5th_param_config_medium_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r1c', folder);
+
+% fit GAL1,3,4; let hill coefficients vary; large step size
+parameter_update = readtable('Aug5th_param_config_large_set4.csv');
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'large-wildtype_1r1c', folder);
+
 
 %% generate config .mat files from MAP parameters
 if 0
