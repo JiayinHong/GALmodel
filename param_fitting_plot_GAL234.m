@@ -5,7 +5,7 @@ function  [ all_conc_Glu, all_conc_Gal ] = param_fitting_plot_GAL234( param, tra
 % the function can run normally, but not in a good structure.
 % 2017.07.11 by JH
 
-output = evalGalPathway_GAL234( param, trait, G2level, G3level, G4level, fit_type );
+output = evalGalPathway_GAL34_changedR( param, trait, G2level, G3level, G4level, fit_type );
 % all_conc_Glu = output.all_conc_Glu;
 % all_conc_Gal = output.all_conc_Gal;
 

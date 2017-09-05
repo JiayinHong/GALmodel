@@ -45,13 +45,13 @@ allmovefrac = p.allmovefrac;
 % setup output file and make sure path exist
 if isempty(outfilepath)
     % check to see if the folder exists
-    if ~isdir('../results/mcmc_for_GAL234-test_stepsize/')
-        mkdir('../results/mcmc_for_GAL234-test_stepsize/')
+    if ~isdir('../results/mcmc_for_GAL234-removeR/')
+        mkdir('../results/mcmc_for_GAL234-removeR/')
     end
     % Now set the file path
     task_id = str2double(arrayid);
     outfilepath = fullfile(...
-        '../results/mcmc_for_GAL234-test_stepsize/', ...
+        '../results/mcmc_for_GAL234-removeR/', ...
         sprintf(...
         '%s-%s-%s.mat', ...
         jobtag, num2str(task_id, '%03d'), ...
@@ -240,7 +240,7 @@ end
 
 function prob = get_prob_data_over_parameter(param, GAL1_trait, GAL2level, GAL3level, GAL4level, error_tol, fit_type)
 
-output = evalGalPathway_GAL234(param, GAL1_trait, GAL2level, GAL3level, GAL4level, fit_type);
+output = evalGalPathway_GAL34_changedR(param, GAL1_trait, GAL2level, GAL3level, GAL4level, fit_type);
 prob = - output.sum_obj / error_tol^2;
 
 end
