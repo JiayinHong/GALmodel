@@ -7,19 +7,56 @@ n_init = 100;     % 5 replicates
 % n_propose = 1000000;     % run for 1000,000 iterations
 n_propose = 50000;
 
-folder = '../metaData/fitGAL134-changeRform/';
+folder = '../metaData/fitGAL134-removeR/';
+% folder = '../metaData/fitGAL134-changeRform/';
 % folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
 % folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
+
+%% use intracellular glucose concentration to replace all Mig1* in the equations
+base_param = set_parameter(3);  % nR1=nR3=nR4=1
+parameter_update = readtable('Aug25th_param_config_set3.csv');
+% fit one column
+% load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
+
+% fit one row
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+% fit one cross
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r1c', folder);
+
 
 %% change the formula of Mig1, medium step size
 base_param = set_parameter(5);
 parameter_update = readtable('Aug8th_param_config_medium_set5.csv');
-% fit one column
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
-% fit one row
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+% % fit one column
+% load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
+% % fit one row
+% load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+% fit one cross
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r1c', folder);
+
+% fit GAL80 delete strain, as well as GAL3 and GAL4 level
+gal80d_param = base_param;
+gal80d_param.a80 = 0.0001;
+gal80d_param.ag80 = 0.0001;
+load('../metaData/trait_extraction/S288C-double_gradient/gal80d_1c.mat')
+rand_init_generator(n_init, trait, n_propose, gal80d_param, parameter_update, 'medium-gal80d_1c', folder);
+load('../metaData/trait_extraction/S288C-double_gradient/gal80d_1r.mat')
+rand_init_generator(n_init, trait, n_propose, gal80d_param, parameter_update, 'medium-gal80d_1r', folder);
+
+% fit Mig1 delete strain, as well as GAL3 and GAL4 level
+mig1d_param = base_param;
+mig1d_param.aR = 0.0001;
+load('../metaData/trait_extraction/S288C-double_gradient/mig1d_1c.mat')
+rand_init_generator(n_init, trait, n_propose, mig1d_param, parameter_update, 'medium-mig1d_1c', folder);
+load('../metaData/trait_extraction/S288C-double_gradient/mig1d_1r.mat')
+rand_init_generator(n_init, trait, n_propose, mig1d_param, parameter_update, 'medium-mig1d_1r', folder);
+
 
 %% use alpha*KMglu to replace KMgal, test different step size
 % also use beta*kglu to replace kgal

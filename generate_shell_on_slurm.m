@@ -105,7 +105,9 @@ end
 
 %% change the formula of Mig1
 algorithm = 'mcmc';
-jobtag_list = {'medium-wildtype_1r', 'medium-wildtype_1c'};
+jobtag_list = {'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'...
+               , 'medium-gal80d_1r', 'medium-gal80d_1c' ...
+               , 'medium-mig1d_1r', 'medium-mig1d_1c'};
 for jobtag = jobtag_list
     jobtag = jobtag{1};
     
@@ -118,6 +120,26 @@ for jobtag = jobtag_list
     end
     
     folder_name = '../metaData/fitGAL134-changeRform/';
+    shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
+    
+end
+
+%% Use internal glucose to replace Mig1 in all the equations
+algorithm = 'mcmc';
+jobtag_list = {'medium-wildtype_1r', 'medium-wildtype_1c'};
+               
+for jobtag = jobtag_list
+    jobtag = jobtag{1};
+    
+    if regexp(jobtag, '\w*_1r$') % match words ending with 1r
+        fit_type = 'one_row';
+    elseif regexp(jobtag, '\w*_1c$') % match words ending with 1c
+        fit_type = 'one_column';
+    elseif regexp(jobtag, '\w*_1r1c$')   % match words ending with 1r1c
+        fit_type = 'one_cross';
+    end
+    
+    folder_name = '../metaData/fitGAL134-removeR/';
     shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
     
 end
