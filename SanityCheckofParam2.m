@@ -1,4 +1,4 @@
-% this scripts is modified from 'SanityCheckofParam'
+% this script is modified from 'SanityCheckofParam'
 % 2017.07.10
 % the original script 'SanityCheckofParam' includes the basic code for
 % making plots, was created to analyze 'wildtype', 'mig1d', and 'gal80d'
@@ -9,12 +9,58 @@
 % GAL3pr-YFP, GAL4pr-YFP data to further constrain the model. Applied to
 % wildtype data only.
 
-%% fit GAL1, GAL3 & GAL4 - prior included version
+%% fit GAL1, 3 & 4 - piror included - external glucose replace R*
+mcmc_data_folder = '../results/external_glucose_replace_R*/';
+jobtags = {'medium-wildtype_1c', 'medium-wildtype_1r'};
+mcmc_old_result = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, 3 & 4 - prior included - remove R*
+mcmc_data_folder = '../results/mcmc_for_GAL234-removeR/';
+jobtags = {'medium-wildtype_1r', 'medium-wildtype_1r1c'};
+mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, 3 & 4 - prior included - change the form of R*
 % medium step size
-mcmc_data_folder = '../results/mcmc_for_GAL234-prior_included';
+mcmc_data_folder = '../results/mutants&GAL34/';
+jobtags = {'medium-wildtype_1r1c', 'medium-gal80d_1c', 'medium-gal80d_1r'...
+          , 'medium-mig1d_1c', 'medium-mig1d_1r'};
+mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, 3 & 4 - prior included - change the form of R*
+% medium step size
+mcmc_data_folder = '../results/changedRform/';
+jobtags = {'medium-wildtype_1r', 'medium-wildtype_1c'};
+mcmc_result_medium_step = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, 3 & 4 - prior included - use alpha*KMglu to replace KMgal
+% also use beta*kglu to replace kgal
+% medium step size
+mcmc_data_folder = '../results/fitGAL134-MediumStepSize/';
+jobtags = {'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'};
+mcmc_result_medium_step = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, 3 & 4 - prior included - use alpha*KMglu to replace KMgal
+% also use beta*kglu to replace kgal
+% test step size and span of prior distribution
+mcmc_data_folder = '../results/mcmc_for_GAL234-test_stepsize/';
+jobtags = {'small-wildtype_1r', 'small-wildtype_1c', 'small-wildtype_1r1c'...
+              ,'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'...
+              ,'large-wildtype_1r', 'large-wildtype_1c', 'large-wildtype_1r1c'};
+mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, GAL3 & GAL4 - prior included version
+% large step size
+mcmc_data_folder = '../rvesults/LargeStepSize-mcmc_for_GAL234-prior_included';
 jobtags = {'varyN-wildtype_1c', 'varyN-wildtype_1r', 'varyN-wildtype_1r1c'...
             , 'sequestrate-wildtype_1c', 'sequestrate-wildtype_1r', 'sequestrate-wildtype_1r1c'};
-mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+mcmc_result_large_step = load_mcmc_result(mcmc_data_folder, jobtags);
+
+%% fit GAL1, GAL3 & GAL4 - prior included version
+% medium step size
+mcmc_data_folder = '../results/MediumStepSize-mcmc_for_GAL234-prior_included';
+jobtags = {'varyN-wildtype_1c', 'varyN-wildtype_1r', 'varyN-wildtype_1r1c'...
+            , 'sequestrate-wildtype_1c', 'sequestrate-wildtype_1r', 'sequestrate-wildtype_1r1c'};
+mcmc_result_medium_step = load_mcmc_result(mcmc_data_folder, jobtags);
 
 %% fit GAL1, GAL3 & GAL4 - prior included version
 % small step size
