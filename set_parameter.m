@@ -104,7 +104,12 @@ switch param_set_i
         param.nR3 = 2;
         param.nR4 = 1;
         param.nRs = 2;
-    case 3      % set all hill coefficients equal to one, essentially a pure sequestration model
+        
+    case 3      % use alpha*KMglu to replace KMgal
+        % use beta*kglu to replace kgal
+        % remove kfR, krR; add KRs, nRs
+        % put back R*, internal gluc level not depend on competitive uptake
+        % but on external gluc alone
         
         param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
         param.a2 = 0;
@@ -128,8 +133,6 @@ switch param_set_i
         param.kr83 = 700.1;
         param.kf84 = 95.2 * 10;
         param.kr84 = 1237;
-        param.kfR = 56.2;
-        param.krR = 3564;
         
         % the following transcription KMs referred to Venturelli's model
         param.KG1 = 41.6;
@@ -139,22 +142,25 @@ switch param_set_i
         param.KR1 = 67.4;
         param.KR3 = 18.8;       % no experimental data available
         param.KR4 = 33.8;
+        param.KRs = 300;        % comparable value to internal gluc
         
         % the following sugar transportation rate and KMs referred to
         % Bennett's model, the KMs were adapted based on experimental data
         param.kglu = 4350;
-        param.kgal = 4350;
-        param.KMglu = 7.5*10^5;
-        param.KMgal = 3*10^6 * 10;  % Aug1st update, more biological plausible
+        param.beta = 1;
+        %         param.kgal = 4350;
+        param.KMglu = 7.5*10^5 * 10;    % to get rid of eternal saturation
+        param.alpha = 200;   
         
-        % the following Hill coefficient all set to be one
-        param.n1 = 1;
-        param.n2 = 1;       % no experimental data available
-        param.n3 = 1;
-        param.n80 = 1;
+        % the following Hill coefficient referred to Venturelli's model
+        param.n1 = 3;
+        param.n2 = 3;       % no experimental data available
+        param.n3 = 2;
+        param.n80 = 2;
         param.nR1 = 1;
         param.nR3 = 1;      % no experimental data available
         param.nR4 = 1;
+        param.nRs = 2;
         
     case 4      % use alpha*KMglu to replace KMgal
         % use beta*kglu to replace kgal
@@ -266,6 +272,115 @@ switch param_set_i
         param.n80 = 2;
         param.nR1 = 2;
         param.nR3 = 2;      % no experimental data available
+        param.nR4 = 1;
+        param.nRs = 2;
+        
+    case 6      % use alpha*KMglu to replace KMgal
+        % use beta*kglu to replace kgal
+        % remove kfR, krR; add KRs, nRs
+        % make nR1, nR3, and nR4 = 1
+        
+        param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
+        param.a2 = 0;
+        param.a3 = 0.25 * 2;
+        param.a4 = 0.058;
+        param.a80 = 0.272;
+        param.aR = 0.288;
+        param.ag1 = 51.77;
+        param.ag2 = 24.36;      % no experimental data available
+        param.ag3 = 2.045;
+        param.ag4 = 0.011;
+        param.ag80 = 0.735;
+        param.d = 0.0077;
+        param.dsugar = 7;
+        
+        % the following association rate and dissociation rate referred to
+        % Venturelli's model
+        param.kf3 = 70.3;
+        param.kr3 = 3391;
+        param.kf83 = 41.1 * 1000;
+        param.kr83 = 700.1;
+        param.kf84 = 95.2 * 10;
+        param.kr84 = 1237;
+        
+        % the following transcription KMs referred to Venturelli's model
+        param.KG1 = 41.6;
+        param.KG2 = 66.6;       % no experimental data available
+        param.KG3 = 32.2;       % no experimental data available
+        param.KG80 = 14;
+        param.KR1 = 67.4 * 10^4;
+        param.KR3 = 18.8 * 10^4;       % no experimental data available
+        param.KR4 = 33.8 * 10^4;
+        param.KRs = 10;        % arbitrary picked value
+        
+        % the following sugar transportation rate and KMs referred to
+        % Bennett's model, the KMs were adapted based on experimental data
+        param.kglu = 4350;
+        param.beta = 1;
+        param.KMglu = 7.5*10^5;
+        param.alpha = 200;
+        %         param.KMgal = 3*10^6 * 10;  % Aug1st update, more biological plausible
+        
+        % the following Hill coefficient referred to Venturelli's model
+        param.n1 = 3;
+        param.n2 = 3;       % no experimental data available
+        param.n3 = 2;
+        param.n80 = 2;
+        param.nR1 = 1;
+        param.nR3 = 1;      % no experimental data available
+        param.nR4 = 1;
+        param.nRs = 2;
+        
+    case 7      % major change - two transporters version
+        
+        param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
+        param.a2 = 0;
+        param.a3 = 0.25 * 2;
+        param.a4 = 0.058;
+        param.a80 = 0.272;
+        param.aR = 0.288;
+        param.ag1 = 51.77;
+        param.ag2 = 24.36;      % no experimental data available
+        param.ag3 = 2.045;
+        param.ag4 = 0.011;
+        param.ag80 = 0.735;
+        param.d = 0.0077;
+        param.dsugar = 7;
+        
+        % the following association rate and dissociation rate referred to
+        % Venturelli's model
+        param.kf3 = 70.3;
+        param.kr3 = 3391;
+        param.kf83 = 41.1 * 1000;
+        param.kr83 = 700.1;
+        param.kf84 = 95.2 * 10;
+        param.kr84 = 1237;
+        
+        % the following transcription KMs referred to Venturelli's model
+        param.KG1 = 41.6;
+        param.KG2 = 66.6;       % no experimental data available
+        param.KG3 = 32.2;       % no experimental data available
+        param.KG80 = 14;
+        param.KR1 = 67.4;
+        param.KR3 = 18.8;       % no experimental data available
+        param.KR4 = 33.8;
+        param.KRs = 300;        % comparable value to internal gluc
+        
+        % the following new parameters are deduced from various literature
+        param.kG2 = 1;      % the scaling factor of GAL2 level
+        param.kHXT = 4350;  % steal the value from previous 'kglu'
+        param.rG2 = 1;      % presume GAL2 has the same affinity on binding glucose and galactose
+        param.rHXT = 200;   % steal the value from previous 'alpha'
+        param.KGglu = 2*10^6;   % see 'The molecular genetics of hexose transport in yeasts'
+        param.KHXTglu = 7.5*10^6;   % steal the value from previous 'KMglu'
+                
+        % the following Hill coefficient referred to Venturelli's model
+        param.n1 = 3;
+        param.n2 = 2;       % no experimental data available
+        param.n3 = 2;
+        param.n80 = 2;
+        param.nR1 = 1;
+        param.nR3 = 1;      % no experimental data available
         param.nR4 = 1;
         param.nRs = 2;
 end
