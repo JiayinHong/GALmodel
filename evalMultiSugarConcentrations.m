@@ -5,7 +5,8 @@ n_condition = length(gluc_condition);
 y_ss_list = nan(n_condition, n_var);
 
 load_global;
-opt = odeset('NonNegative',1:12);
+% opt = odeset('NonNegative',1:12);
+opt = odeset('NonNegative',1:11);
 accurate_thresh = 10^-8;
 % opt = [];
 
@@ -13,27 +14,31 @@ for i_condition = 1:n_condition
     
     param.exglu = gluc_condition(i_condition) * perc_to_nm;
     param.exgal = galc_condition(i_condition) * perc_to_nm;
-    odefunc = @(t,y)GALode(t,y,param);
+    odefunc = @(t,y)GALode3(t,y,param);
     curInitVal = init_val;
     
     if param.exglu == 0
         % R*=0, glu=0
-        tmp = [ones(1,7),0,1,1,0,1];
+%         tmp = [ones(1,7),0,1,1,0,1];
+        tmp = [ones(1,9),0,1];
         curInitVal = curInitVal .* tmp;
     end
     if param.exgal == 0
         % Gal3*=0, C83=0, gal=0
-        tmp = [ones(1,5),0,1,1,0,1,1,0];
+%         tmp = [ones(1,5),0,1,1,0,1,1,0];
+        tmp = [ones(1,5),0,1,0,1,1,0];
         curInitVal = curInitVal .* tmp;
     end
     if param.aR == 0
         % Repressor=0, R*=0
-        tmp = [ones(1,6),0,0,ones(1,4)];
+%         tmp = [ones(1,6),0,0,ones(1,4)];
+        tmp = [ones(1,6),0,ones(1,4)];
         curInitVal = curInitVal .* tmp;
     end
     if param.a80 == 0 && param.ag80 == 0
         % Gal80=0, C83=0, C84=0
-        tmp = [ones(1,4),0,ones(1,3),0,0,1,1];
+%         tmp = [ones(1,4),0,ones(1,3),0,0,1,1];
+        tmp = [ones(1,4),0,ones(1,2),0,0,1,1];
         curInitVal = curInitVal .* tmp;
     end
     
