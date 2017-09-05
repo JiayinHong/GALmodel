@@ -105,7 +105,8 @@ dMig1tot = aR - d * Mig1tot;
 % dMig1s = Mig1star_f - Mig1star_r - d * Mig1s;
 dC83 = C83_f - C83_r - d * C83;
 dC84 = C84_f - C84_r - d * C84;
-dglu = kglu * exglu/(1/alpha * exgal + exglu + KMglu) - dsugar * glu;
+% dglu = kglu * exglu/(1/alpha * exgal + exglu + KMglu) - dsugar * glu;
+dglu = kglu * exglu/(exglu + KMglu) - dsugar * glu;
 dgal = beta*kglu * exgal/(alpha * exglu + exgal + alpha*KMglu) - G3star_f + G3star_r  - dsugar * gal;
 
 dydt = ...
