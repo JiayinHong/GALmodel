@@ -6,11 +6,11 @@ G4level = trait.basal_level;
 
 %% load parameter, trait, and fit type
 
-i_example = 21;
+i_example = 1;
 jobtag = mcmc_result{i_example, 'jobtag'};
 param = mcmc_result{i_example, 'param_map'};
 trait = mcmc_result{i_example, 'trait'}{1};
-fit_type = 'one_cross';
+fit_type = 'one_row';
 
 %% load parameter, trait, and fit type
 

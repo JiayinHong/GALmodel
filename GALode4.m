@@ -78,7 +78,7 @@ KRs = param.KRs;    % the affinity of glucose binding to free Mig1
 kG2 = param.kG2;        % G2 transportation rate
 kHXT = param.kHXT;      % HXT transportation rate
 rG2 = param.rG2;        % KGgal/KGglu
-rHXT = param.HXT;       % KHXTgal/KHXTglu
+rHXT = param.rHXT;       % KHXTgal/KHXTglu
 KGglu = param.KGglu;    % the binding affinity between G2 and glucose
 KHXTglu = param.KHXTglu;    % the binding affinity between HXT and glucose
 
