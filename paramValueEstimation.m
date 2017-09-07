@@ -2,7 +2,8 @@
 % and appropriate value for KMglu
 
 % the glucose gradient in one column fitting
-exglu = [56000000;28000000;14000000;7000000;3500000;1750000;875000;0];
+% exglu = [56000000;28000000;14000000;7000000;3500000;1750000;875000;0];
+exglu = linspace(0,10^8,20);    % test a broader range of glucose titration
 kglu = 4350;    % parameter value from literature
 dsugar = 7;
 

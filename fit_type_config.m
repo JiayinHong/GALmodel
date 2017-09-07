@@ -1,4 +1,6 @@
 switch fit_type
+    case '96well'
+        index_list = [1:96];
     case 'one_row'
         index_list = [4:8:92];
     case 'one_column'

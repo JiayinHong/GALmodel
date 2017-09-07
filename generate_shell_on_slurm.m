@@ -24,11 +24,21 @@ for algorithm = algorithm_list
             fit_type = 'one_column';
         elseif regexp(jobtag, '\w*_1r1c$')   % match words ending with 1r1c
             fit_type = 'one_cross';
+        elseif regexp(jobtag, '\w*_96well$')    % match words ending with 96well
+            fit_type = '96well';
         end
         
         shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
     end
 end
+
+%% generate shell scripts to fit GAL1,3,4 in all 96 well data
+algorithm = 'mcmc';
+jobtag = 'wildtype_96well';
+folder_name = '../metaData/singleTrans-96well/';
+fit_type = '96well';
+
+shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
 
 %% re-run MCMC to fit BC&YJM glucose gradient data
 algorithm = 'mcmc';

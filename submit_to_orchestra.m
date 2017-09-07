@@ -7,7 +7,8 @@ n_init = 100;     % 5 replicates
 % n_propose = 1000000;     % run for 1000,000 iterations
 n_propose = 50000;
 
-folder = '../metaData/fitGAL134-removeR/';
+folder = '../metaData/singleTrans-96well/';
+% folder = '../metaData/fitGAL134-removeR/';
 % folder = '../metaData/fitGAL134-changeRform/';
 % folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
 % folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
@@ -18,14 +19,16 @@ parameter_update = readtable('Aug25th_param_config_set3.csv');
 % fit one column
 % load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
 % rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
-
 % fit one row
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
+% load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r', folder);
 % fit one cross
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
-rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r1c', folder);
+% load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1r1c.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1r1c', folder);
 
+% fit all 96well data
+load('../metaData/trait_extraction/S288C-double_gradient/wildtype_all_data.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_96well', folder);
 
 %% change the formula of Mig1, medium step size
 base_param = set_parameter(5);
