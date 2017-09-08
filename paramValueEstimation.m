@@ -68,3 +68,16 @@ gal_hxt = (kHXT * exgal ./(rHXT * exglu + exgal + KHXTgal)) /7;     % steday sta
 dglu = (kG2 * G2 .* exglu ./(1/rG2 * exgal + exglu + KGglu) + kHXT .* exglu ./(1/rHXT * exgal + exglu + KHXTglu)) /7;
 dgal = (kG2 * G2 * exgal ./(rG2 .* exglu + exgal + KGgal) + kHXT * exgal ./(rHXT * exglu + exgal + KHXTgal)) /7;
 
+%% HXT synthesis inhibited by G4
+nHXT = 1;
+G4 = logspace(0,1,20);
+figure
+drawnow
+for KHXT = 3:3:21
+    HXT_frac = KHXT .^nHXT ./ (KHXT .^nHXT + G4 .^nHXT);
+    plot(G4,HXT_frac,'LineWidth', 1.5)
+    hold all
+    pause(0.3)
+end
+
+% KHXT = 9
