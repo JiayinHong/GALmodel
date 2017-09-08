@@ -71,6 +71,9 @@ end
 
 % finally, sum up all three obj
 output.GAL3_obj = GAL3_obj;
+%%%%%%%%%%%% adjust GAL3 weighting %%%%%%%%%%
+GAL3_obj = GAL3_obj / 10;
+%%%%%%%%%%%% based on a simple test %%%%%%%%%
 output.GAL4_obj = GAL4_obj;
 output.sum_obj = GAL1_obj+GAL2_obj+GAL3_obj+GAL4_obj;
 
