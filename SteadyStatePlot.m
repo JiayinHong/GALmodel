@@ -143,6 +143,9 @@ set(gca, 'yscale', 'log')
 title('G1', 'FontSize', fontsize)
 grid on
 
+ax9 = subplot(4,5,9);   % return the axis object of subplot(4,5,9),
+                        % the one of species 'Mig1tot'
+
 for i_species = 2:n_species
     if i_species > 8
         subplot(4, 5, i_species+3)
@@ -160,6 +163,8 @@ for i_species = 2:n_species
     title(species_list{i_species}, 'FontSize', fontsize)
     grid on
 end
+
+ytickformat(ax9,'%.0f')     % specify the tick label format of 'Mig1tot'
 
 % plot Mig1* level
 subplot(4,5,15)
@@ -197,6 +202,7 @@ grid on
 subplot(4,5,19) % G4+C84
 
 plot(1:n_condition, (hi_state(:,4) + hi_state(:,9)), '.', 'markersize', markersize)
+ytickformat('%.2f')     % specify the tick label format of 'G4+C84'
 xlim([0 n_condition+1])
 set(gca, 'FontSize', fontsize)
 title('G4+C84', 'FontSize', fontsize)
