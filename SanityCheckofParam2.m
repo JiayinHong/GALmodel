@@ -9,10 +9,10 @@
 % GAL3pr-YFP, GAL4pr-YFP data to further constrain the model. Applied to
 % wildtype data only.
 
-%% fit GAL1, 3 & 4 - piror included - external glucose replace R*
-mcmc_data_folder = '../results/external_glucose_replace_R*/';
-jobtags = {'medium-wildtype_1c', 'medium-wildtype_1r'};
-mcmc_old_result = load_mcmc_result(mcmc_data_folder, jobtags);
+%% fit GAL1, 3 & 4 - piror included - singleTrans-96well
+mcmc_data_folder = '../results/singleTrans-96well/';
+jobtags = {'wildtype_96well'};
+singleTrans_96well = load_mcmc_result(mcmc_data_folder, jobtags);
 
 %% fit GAL1, 3 & 4 - prior included - remove R*
 mcmc_data_folder = '../results/mcmc_for_GAL234-removeR/';

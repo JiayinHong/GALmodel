@@ -80,5 +80,10 @@ output.sum_obj = GAL1_obj+GAL2_obj+GAL3_obj+GAL4_obj;
 output.all_conc_Glu = y_ss_Glu; % all 12 variables concentration at steady state, initial from Glu only condition
 output.all_conc_Gal = y_ss_Gal; % all 12 variables concentration at steady state, initial from Gal only condition
 
+% for GAL1 level, add autofluorescence
+autofluorescence = get_auto_fluorescence(trait);
+
+output.all_conc_Glu(:,1) = output.all_conc_Glu(:,1) + autofluorescence;
+output.all_conc_Gal(:,1) = output.all_conc_Gal(:,1) + autofluorescence;
 end
 
