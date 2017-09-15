@@ -1,4 +1,7 @@
 %% load data
+% 2017.9.15 note
+% verified that when define the threshold, there's no difference between
+% 'median' and 'mean' in regards of the final trait table
 
 clear
 load('../RawData/mig1d_gal80d_wt_data.mat')
@@ -65,7 +68,7 @@ for plate_name = plate_type_list;
             counts_list_ref = histcounts(log_ref_data,hist_bin_edge);
             % get a list of counts in each bin
             normalized_counts_ref = counts_list_ref ./ counts_total_ref;
-            threshold = mean(log_ref_data);
+            threshold = median(log_ref_data);   % use median to replace mean
             % ignore if there are more counts (normalized) of query than ref
             % data beneath the threshold
             
@@ -126,7 +129,7 @@ for plate_name = plate_type_list;
             counts_list_ref = histcounts(log_ref_data,hist_bin_edge);
             counts_total_ref = size(ref_data,1);
             normalized_counts_ref = counts_list_ref ./ counts_total_ref;
-            threshold = mean(log_ref_data);
+            threshold = median(log_ref_data);   % use median to replace mean
             
             for i_row = 1:8
                 for j_col = 1:12
@@ -178,7 +181,7 @@ for plate_name = plate_type_list;
             counts_list_ref = histcounts(log_ref_data,hist_bin_edge);
             counts_total_ref = size(ref_data,1);
             normalized_counts_ref = counts_list_ref ./ counts_total_ref;
-            threshold = mean(log_ref_data);
+            threshold = median(log_ref_data);   % use median to replace mean
             % if delta freqency in bins beneath threshold > 0,
             % drop it, make it equal to 0
             
