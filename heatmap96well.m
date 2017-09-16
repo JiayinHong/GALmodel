@@ -13,10 +13,13 @@ ind1 = find(G1_96well.mask_induction == 0);     % all the rows whose mask_induct
 tmp = find(G1_96well(ind1,:).mask_basal == 0);
 ind2 = ind1(tmp);                               % the rows whose mask_basal also equals to 0
 ind1(tmp) = [];                                 % remove ind2 from ind1, so that ind1 only contains
-% rows whose mask_induction == 0 while mask_basal ~= 0
+                                                % rows whose mask_induction == 0 while mask_basal ~= 0
 % use mean to represent induced level in ind2
-G1_96well(ind2,:).ind_level = G1_96well(ind2,:).basal_level .* G1_96well(ind2,:).basal_frac ...
-    + G1_96well(ind2,:).ind_level .* G1_96well(ind2,:).ind_frac;
+% G1_96well(ind2,:).ind_level = G1_96well(ind2,:).basal_level .* G1_96well(ind2,:).basal_frac ...
+%     + G1_96well(ind2,:).ind_level .* G1_96well(ind2,:).ind_frac;
+
+% use NaN for those induced level in ind2
+G1_96well{ind2, 'ind_level'} = NaN;
 % use basal_level to represent induced level in ind1
 G1_96well(ind1,:).ind_level = G1_96well(ind1,:).basal_level;
 
@@ -26,16 +29,16 @@ alldata(:) = logyfp_to_nm(G1_96well{:,'ind_level'});
 figure
 set(gcf, 'position', [689 136 1036 811])
 % R2016a version
-heatmap(alldata, rowLabels, colLabels, '%.2f', 'Colorbar', true ...
-    , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14  ...
-    , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-title('Wildtype G1 induced level', 'FontSize', 15)
-xlabel('galactose titration')
-ylabel('glucose titration')
+% heatmap(alldata, rowLabels, colLabels, '%.2f', 'Colorbar', true ...
+%     , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14  ...
+%     , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
+% title('Wildtype G1 induced level', 'FontSize', 15)
+% xlabel('galactose titration')
+% ylabel('glucose titration')
 
 % R2017a version
-% h = heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 15);
-% title('Wildtype G1 induced level')
+h = heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 8);
+title('Wildtype G1 induced level')
 
 %% Load mcmc results
 load('../metaData/trait_extraction/GAL3pr_all_data.mat')
@@ -48,12 +51,18 @@ jobtags = {'wildtype_96well'};
 singleTrans_96well = load_mcmc_result(mcmc_data_folder, jobtags);
 
 %% fetch simulation results
-i_example = 2;
+i_example = 1;
 param = singleTrans_96well{i_example, 'param_map'};
 output = evalGalPathway_GAL34_changedR(param, G1_96well, 0, G3level, G4level, '96well');
 
 simG1_96well = nan(8,12);
 simG1_96well(:) = output.all_conc_Gal(:,1);
+% use basal level to compare with expt data when mask_basal = 1 &&
+% mask_induction == 0
+simG1_96well(ind1) = output.all_conc_Glu(ind1,1);
+
+% fetch original simulation result to draw the titration plot
+simG1_ind = output.all_conc_Gal(:,1);
 simG1_basal = output.all_conc_Glu(:,1);
 
 %% heatmap showing simulated wildtype 96-well induced G1 level
@@ -69,7 +78,7 @@ set(gcf, 'position', [689 136 1036 811])
 % ylabel('glucose titration')
 
 % R2017a version
-heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 15);
+heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 8);
 title(sprintf('The no.%d example', i_example))
 
 
@@ -85,16 +94,16 @@ figure
 set(gcf, 'position', [689 136 1036 811])
 
 % R2016a version
-heatmap(logdelta, rowLabels, colLabels, '%.2f' ...
-    , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
-    , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-title(sprintf('The deviation heatmap of no.%d example', i_example), 'FontSize', 15)
-xlabel('galactose titration')
-ylabel('glucose titration')
+% heatmap(logdelta, rowLabels, colLabels, '%.2f' ...
+%     , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
+%     , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
+% title(sprintf('The deviation heatmap of no.%d example', i_example), 'FontSize', 15)
+% xlabel('galactose titration')
+% ylabel('glucose titration')
 
 % R2017a version
-% heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 15);
-% title(sprintf('The deviation heatmap of no.%d example', i_example))
+heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 8);
+title(sprintf('The deviation heatmap of no.%d example', i_example))
 
 
 %% compress the data in either direction
@@ -130,7 +139,7 @@ for i = 1:8     % from the first to the last row
     end
     
     plot(simG1_basal(index), 'k-', 'linewidth', linewid)
-    plot(simG1_96well(index), 'r-', 'linewidth', linewid)
+    plot(simG1_ind(index), 'r-', 'linewidth', linewid)
     
     set(gca, 'yscale', 'log', 'FontSize', 12)
     if i == 8       % the last row
@@ -178,7 +187,7 @@ for i = 1:12     % from the first to the last row
     end
     
     plot(simG1_basal(index), 'k-', 'linewidth', linewid)
-    plot(simG1_96well(index), 'r-', 'linewidth', linewid)
+    plot(simG1_ind(index), 'r-', 'linewidth', linewid)
     
     set(gca, 'yscale', 'log', 'FontSize', 12)
     if i == 12      % the last row
@@ -225,7 +234,7 @@ for i = 1:12     % from the first to the last row
     end
     
     plot(simG1_basal(index),8:-1:1, 'k-', 'linewidth', linewid)
-    plot(simG1_96well(index),8:-1:1, 'r-', 'linewidth', linewid)
+    plot(simG1_ind(index),8:-1:1, 'r-', 'linewidth', linewid)
     
     set(gca, 'xscale', 'log', 'FontSize', 12)
     if i == 1   % the first col

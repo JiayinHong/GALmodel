@@ -34,11 +34,13 @@ end
 
 %% generate shell scripts to fit GAL1,3,4 in all 96 well data
 algorithm = 'mcmc';
-jobtag = 'wildtype_96well';
+jobtag_list = {'wildtype_96well', 'mig1d_96well', 'gal80d_96well'};
 folder_name = '../metaData/singleTrans-96well/';
 fit_type = '96well';
-
-shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
+for jobtag = jobtag_list
+    jobtag = jobtag{1};
+    shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
+end
 
 %% re-run MCMC to fit BC&YJM glucose gradient data
 algorithm = 'mcmc';
@@ -94,8 +96,8 @@ end
 algorithm = 'mcmc';
 % test different step size and the span of prior distribution
 jobtag_list = {'small-wildtype_1r', 'small-wildtype_1c', 'small-wildtype_1r1c'...
-              ,'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'...
-              ,'large-wildtype_1r', 'large-wildtype_1c', 'large-wildtype_1r1c'};
+    ,'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'...
+    ,'large-wildtype_1r', 'large-wildtype_1c', 'large-wildtype_1r1c'};
 
 for jobtag = jobtag_list
     jobtag = jobtag{1};
@@ -116,8 +118,8 @@ end
 %% change the formula of Mig1
 algorithm = 'mcmc';
 jobtag_list = {'medium-wildtype_1r', 'medium-wildtype_1c', 'medium-wildtype_1r1c'...
-               , 'medium-gal80d_1r', 'medium-gal80d_1c' ...
-               , 'medium-mig1d_1r', 'medium-mig1d_1c'};
+    , 'medium-gal80d_1r', 'medium-gal80d_1c' ...
+    , 'medium-mig1d_1r', 'medium-mig1d_1c'};
 for jobtag = jobtag_list
     jobtag = jobtag{1};
     
@@ -137,7 +139,7 @@ end
 %% Use internal glucose to replace Mig1 in all the equations
 algorithm = 'mcmc';
 jobtag_list = {'medium-wildtype_1r', 'medium-wildtype_1c'};
-               
+
 for jobtag = jobtag_list
     jobtag = jobtag{1};
     

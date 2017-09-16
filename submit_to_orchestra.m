@@ -30,6 +30,20 @@ parameter_update = readtable('Aug25th_param_config_set3.csv');
 load('../metaData/trait_extraction/S288C-double_gradient/wildtype_all_data.mat')
 rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wildtype_96well', folder);
 
+% fit all 96well data, mig1d
+load('../metaData/trait_extraction/S288C-double_gradient/mig1d_all_data.mat')
+parameter_update = readtable('Aug25th_param_config_set3.csv');
+parameter_update{5,'prior_sigma'} = 5;    % no constrain on aR
+parameter_update{5,'proposal_sigma_1'} = 1;     % in case the initial value is ridiculous, a bigger step size is needed
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'mig1d_96well', folder);
+
+% fit all 96well data, gal80d
+load('../metaData/trait_extraction/S288C-double_gradient/gal80d_all_data.mat')
+parameter_update = readtable('Aug25th_param_config_set3.csv');
+parameter_update{[4,9], 'prior_sigma'} = 5;    % no constrain on a80, ag80
+parameter_update{[4,9], 'proposal_sigma_1'} = 1;
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'gal80d_96well', folder);
+
 %% change the formula of Mig1, medium step size
 base_param = set_parameter(5);
 parameter_update = readtable('Aug8th_param_config_medium_set5.csv');
