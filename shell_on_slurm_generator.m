@@ -8,7 +8,7 @@ str4 = '#SBATCH -c 1\n';
 str5 = '#SBATCH --mem-per-cpu=10G\n';
 str6 = '#SBATCH -e ../err_files/%%A_%%a.err\n';
 str7 = '#SBATCH -o ../out_files/%%A_%%a.out\n';
-str8 = 'module load gcc/6.2.0 matlab/2016b\n';
+str8 = 'module load gcc/6.2.0 matlab/2017a\n';
 long_string = [str1, str2, str3, str4, str5, str6, str7, str8];
 
 % to avoid the conflict of shell scripts name
