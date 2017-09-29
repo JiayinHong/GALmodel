@@ -35,7 +35,8 @@ y_ss_Gal = y_ss_Gal(end:-1:1,:);
 basal_level = y_ss_Glu(:,1);
 induction_level = y_ss_Gal(:,1);
 
-[output.sum_obj, output.simulation_result_linear, output.experiment_result_linear] = calculate_obj( trait, basal_level, induction_level );
+% [output.sum_obj, output.simulation_result_linear, output.experiment_result_linear] = calculate_obj( trait, basal_level, induction_level );
+[output.G1obj, ~, ~] = calculate_obj( trait, basal_level, induction_level );
 
 autofluorescence = get_auto_fluorescence(trait);
 % output.all_conc_Glu = y_ss_Glu + autofluorescence;
