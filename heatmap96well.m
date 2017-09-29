@@ -1,114 +1,173 @@
-%% heatmap showing experimental wildtype 96-well induced G1 level
+% the following part is only valid in R2017a version, i.e. function in
+% script
 
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_all_data.mat')
-G1_96well = trait;
+% load mcmc results
+% mcmc_data_folder = '../results/singleTrans-96well/';
+% mcmc_data_folder = '../results/singleTrans_noPrior/';
+% 
+% mcmc_data_folder = '../results/twoTrans-96well/';
+% mcmc_data_folder = '../results/biTrans_noRegulation/';  % 96well, no prior version
+% 
+% mcmc_data_folder = '../results/biTrans_addHXT_96well/';
+% mcmc_data_folder = '../results/biTrans_addHXT_noPrior/';
+% 
+% mcmc_data_folder = '../results/constTrans_96well/';
+% mcmc_data_folder = '../results/constTrans_noPrior/';
+% 
+% jobtags = {'wildtype_96well', 'gal80d_96well', 'mig1d_96well'};
+% mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
+% 
+% mcmc_result = sortrows(mcmc_result,'map_data_over_param','descend');    % when prior is included
+% mcmc_result = sortrows(mcmc_result,'param_prob_map','descend');         % when there's no prior
+% 
+% i_example = 1;
+% param = mcmc_result{i_example, 'param_map'};
+% 
+% dataType = 'wildtype';      % 'wildtype' / 'mig1d' / 'gal80d'
+% version = 'R2016a';         % 'R2016a' / 'R2017a'
+% heatmap96well(param, dataType, version)
+
+function heatmap96well(param, dataType, version)
+%   This function is adapted from a previous script, used to plot 96-well
+%   heatmap for wildtype/mig1d/gal80d and simulation results comparison,
+%   also, compress the simulation result in eith direction and draw the
+%   titration plot
+%   created by JH, 2017.9.22
+%   warning: be careful of the trait loading, there is only once load in
+%   the current version, if changed later, be sure the old trait are not
+%   overlaid by the new one
+
+%% claim saving directory
+saveDir = sprintf('../96wellPlot/%s', dataType);  % the directory to store the figures
+if ~isdir(saveDir)
+    mkdir(saveDir)
+end
+%% load experimental data
+switch dataType
+    case 'wildtype'
+        load('../metaData/trait_extraction/S288C-double_gradient/wildtype_all_data.mat')
+    case 'mig1d'
+        load('../metaData/trait_extraction/S288C-double_gradient/mig1d_all_data.mat')
+    case 'gal80d'
+        load('../metaData/trait_extraction/S288C-double_gradient/gal80d_all_data.mat')
+    otherwise
+        error('choose one from ''wildtype'', ''mig1d'', and ''gal80d''')
+end
+
+expt_96well = trait;
 galLabel = {'None','-8','-7','-6','-5','-4','-3','-2','-1','0','1','2'};
 gluLabel = {'None','-6','-5','-4','-3','-2','-1','0'};
 colLabels = fliplr(gluLabel);
 rowLabels = galLabel;
 load_global
 alldata = nan(8,12);
-% to clean the data
-ind1 = find(G1_96well.mask_induction == 0);     % all the rows whose mask_induction == 0
-tmp = find(G1_96well(ind1,:).mask_basal == 0);
-ind2 = ind1(tmp);                               % the rows whose mask_basal also equals to 0
-ind1(tmp) = [];                                 % remove ind2 from ind1, so that ind1 only contains
-                                                % rows whose mask_induction == 0 while mask_basal ~= 0
-% use mean to represent induced level in ind2
-% G1_96well(ind2,:).ind_level = G1_96well(ind2,:).basal_level .* G1_96well(ind2,:).basal_frac ...
-%     + G1_96well(ind2,:).ind_level .* G1_96well(ind2,:).ind_frac;
 
-% use NaN for those induced level in ind2
-G1_96well{ind2, 'ind_level'} = NaN;
-% use basal_level to represent induced level in ind1
-G1_96well(ind1,:).ind_level = G1_96well(ind1,:).basal_level;
+if strcmp(dataType, 'gal80d')
+    % gal80d is different from the other two, because all the mask_basal in
+    % gal80d equals to 0 (unimodal), thus there's no need to replace
+    % induced level using basal level, just change the wells we don't trust
+    % to NaN
+    ind3 = find(expt_96well.mask_induction == 0);
+    expt_96well{ind3, 'ind_level'} = NaN;
+else
+    % to clean the data
+    ind1 = find(expt_96well.mask_induction == 0);     % all the rows whose mask_induction == 0
+    tmp = find(expt_96well(ind1,:).mask_basal == 0);
+    ind2 = ind1(tmp);                               % the rows whose mask_basal also equals to 0
+    ind1(tmp) = [];                                 % remove ind2 from ind1, so that ind1 only contains
+                                                    % rows whose mask_induction == 0 while mask_basal ~= 0
+    
+    % use NaN for those induced level in ind2
+    expt_96well{ind2, 'ind_level'} = NaN;
+    % use basal_level to represent induced level in ind1
+    expt_96well(ind1,:).ind_level = expt_96well(ind1,:).basal_level;
+end
 
-alldata(:) = logyfp_to_nm(G1_96well{:,'ind_level'});
-
-
-figure
-set(gcf, 'position', [689 136 1036 811])
-% R2016a version
-% heatmap(alldata, rowLabels, colLabels, '%.2f', 'Colorbar', true ...
-%     , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14  ...
-%     , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-% title('Wildtype G1 induced level', 'FontSize', 15)
-% xlabel('galactose titration')
-% ylabel('glucose titration')
-
-% R2017a version
-h = heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-title('Wildtype G1 induced level')
-
-%% Load mcmc results
-load('../metaData/trait_extraction/GAL3pr_all_data.mat')
-G3level = trait.basal_level;
-load('../metaData/trait_extraction/GAL4pr_all_data.mat')
-G4level = trait.basal_level;
-
-mcmc_data_folder = '../results/singleTrans-96well/';
-jobtags = {'wildtype_96well'};
-singleTrans_96well = load_mcmc_result(mcmc_data_folder, jobtags);
+alldata(:) = logyfp_to_nm(expt_96well{:,'ind_level'});
 
 %% fetch simulation results
-i_example = 1;
-param = singleTrans_96well{i_example, 'param_map'};
-output = evalGalPathway_GAL34_changedR(param, G1_96well, 0, G3level, G4level, '96well');
+output = evalGalPathway( param, trait, '96well' );
 
 simG1_96well = nan(8,12);
 simG1_96well(:) = output.all_conc_Gal(:,1);
-% use basal level to compare with expt data when mask_basal = 1 &&
-% mask_induction == 0
-simG1_96well(ind1) = output.all_conc_Glu(ind1,1);
+
+if exist('ind1', 'var')
+    % use basal level to compare with expt data when mask_basal = 1 &&
+    % mask_induction == 0
+    simG1_96well(ind1) = output.all_conc_Glu(ind1,1);
+end
 
 % fetch original simulation result to draw the titration plot
 simG1_ind = output.all_conc_Gal(:,1);
 simG1_basal = output.all_conc_Glu(:,1);
 
-%% heatmap showing simulated wildtype 96-well induced G1 level
-figure
-set(gcf, 'position', [689 136 1036 811])
-% R2016a version
-
-% heatmap(simG1_96well, rowLabels, colLabels, '%.2f' ...
-%     , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
-%     , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-% title(sprintf('The no.%d example', i_example), 'FontSize', 15)
-% xlabel('galactose titration')
-% ylabel('glucose titration')
-
-% R2017a version
-heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-title(sprintf('The no.%d example', i_example))
-
-
-%% difference map
-% experimental data 8*12 - alldata
-% simulation results 8*12 - simG1_96well
+%% simple calculation
 logAllData = log(alldata);
 logSimG1 = log(simG1_96well);
 logdelta = logSimG1 - logAllData;   % the deviation in log scale
-lindelta = simG1_96well - alldata;  % the deviation in linear scale
+% lindelta = simG1_96well - alldata;  % the deviation in linear scale
 
-figure
-set(gcf, 'position', [689 136 1036 811])
+%% draw heatmap
+switch version
+    case 'R2016a'
+        % first, heatmap for the expt trait
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(alldata, rowLabels, colLabels, '%.2f', 'Colorbar', true ...
+            , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14  ...
+            , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
+        h=title(sprintf('%s expt G1 induced level', dataType), 'FontSize', 15);
+        xlabel('galactose titration')
+        ylabel('glucose titration')
+        export_fig(fullfile(saveDir, h.String))
+        
+        % second, heatmap for simulation results
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(simG1_96well, rowLabels, colLabels, '%.2f' ...
+            , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
+            , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
+        h=title(sprintf('%s simulation G1 induced level', dataType), 'FontSize', 15);
+        xlabel('galactose titration')
+        ylabel('glucose titration')
+        export_fig(fullfile(saveDir, h.String))
+        
+        % Then, difference heatmap
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(logdelta, rowLabels, colLabels, '%.2f' ...
+            , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
+            , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
+        h=title(sprintf('The deviation heatmap - %s', dataType), 'FontSize', 15);
+        xlabel('galactose titration')
+        ylabel('glucose titration')
+        export_fig(fullfile(saveDir, h.String))
 
-% R2016a version
-% heatmap(logdelta, rowLabels, colLabels, '%.2f' ...
-%     , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
-%     , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-% title(sprintf('The deviation heatmap of no.%d example', i_example), 'FontSize', 15)
-% xlabel('galactose titration')
-% ylabel('glucose titration')
+    case 'R2017a'
+        % first, heatmap for the expt trait
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 8);
+        h=title(sprintf('%s expt G1 induced level', dataType));
+        export_fig(fullfile(saveDir, h.String))
 
-% R2017a version
-heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-title(sprintf('The deviation heatmap of no.%d example', i_example))
+        % second, heatmap for simulation results
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 8);
+        h=title(sprintf('%s simulation G1 induced level', dataType));
+        export_fig(fullfile(saveDir, h.String))
 
+        % then, difference heatmap
+        figure
+        set(gcf, 'position', [689 136 1036 811])
+        heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 8);
+        h=title(sprintf('The deviation heatmap - %s', dataType));
+        export_fig(fullfile(saveDir, h.String))
 
-%% compress the data in either direction
-% reload wildtype 96-well G1 level data
-load('../metaData/trait_extraction/S288C-double_gradient/wildtype_all_data.mat')
+end
+
+%% compress the data in either direction and draw the titration plot
 markersize = 6;
 linewid = 1.5;
 
@@ -152,15 +211,16 @@ for i = 1:8     % from the first to the last row
     ylabel(colLabels{i}, 'FontWeight', 'bold')
 end
 
-h = suplabel('galactose titration subplot', 't');
-h.FontSize = 15;
 h = suplabel('glucose gradient', 'y');
 h.FontSize = 15;
 h = suplabel('galactose gradient', 'x');
 h.FontSize = 15;
+[ax,h] = suplabel(sprintf('%s galactose titration subplot', dataType), 't');
+h.FontSize = 15;
+export_fig(fullfile(saveDir, ax.Title.String))
 
 
-%% split the 96-well plate into 12 rows, each one is glucose titration
+% split the 96-well plate into 12 rows, each one is glucose titration
 gluTitrate = 1:8;    % the first col of glu titration
 
 figure
@@ -199,15 +259,17 @@ for i = 1:12     % from the first to the last row
     ylabel(rowLabels{i}, 'FontWeight', 'bold')
 end
 
-h = suplabel('glucose titration subplot', 't');
-h.FontSize = 15;
 h = suplabel('galactose gradient', 'y');
 h.FontSize = 15;
 h = suplabel('glucose gradient', 'x');
 h.FontSize = 15;
+[ax,h] = suplabel(sprintf('%s glucose titration subplot by row', dataType), 't');
+h.FontSize = 15;
+export_fig(fullfile(saveDir, ax.Title.String))
 
 
-%% split the 96-well plate into 12 columns, each one is glucose titration
+
+% split the 96-well plate into 12 columns, each one is glucose titration
 gluTitrate = 1:8;    % the first col of glu titration
 
 figure
@@ -246,13 +308,14 @@ for i = 1:12     % from the first to the last row
     xlabel(rowLabels{i}, 'FontWeight', 'bold')
 end
 
-h = suplabel('glucose titration subplot', 't');
-h.FontSize = 15;
 h = suplabel('galactose gradient', 'x');
 h.FontSize = 15;
 h = suplabel('glucose gradient', 'y');
 h.FontSize = 15;
+[ax,h] = suplabel(sprintf('%s glucose titration subplot by column', dataType), 't');
+h.FontSize = 15;
+export_fig(fullfile(saveDir, ax.Title.String))
 
 
-
+end
 
