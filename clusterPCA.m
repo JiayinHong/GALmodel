@@ -26,6 +26,7 @@ for i_job = 1:length(jobtags)
         end
     end
     
+    % use id to distinguish between wt and mutants clusters
     param_map_id = repmat(i_job,[n_sample,1]);
     param_val_all = [param_val_all; param_map_val];
     param_id_all = [param_id_all; param_map_id];
@@ -41,14 +42,14 @@ n_param_update = height(parameter_update);
 for i_job = 1:length(jobtags)
     
     mcmc_result_tmp = mcmc_result_filter(ismember(mcmc_result_filter.jobtag, jobtags{i_job}),:);
-    n_chain = height(mcmc_result_tmp);
+    n_chain = height(mcmc_result_tmp);      % the total Markov chains
     
     for i_chain = 1:n_chain
         prob_list = mcmc_result_tmp{i_chain, 'prob_data_over_parameter_list'}{1};
         param_list = mcmc_result_tmp{i_chain, 'param_list'};
         filter_id = find(prob_list > -86);
         [~,I] = max(prob_list);
-        II = find(I==filter_id);
+        II = find(I==filter_id);    % the index of MAP
         param_chain = nan(length(filter_id), n_param_update);
         
         for i_param_update = 1:n_param_update
@@ -82,7 +83,7 @@ h.FontSize = fontsize;
 h.FontWeight = 'bold';
 h.Location = 'NorthWest';
 
-% 3d PCA
+%% 3d PCA
 cluster_names = {'wt', 'gal80d', 'mig1d'};
 figure
 set(gcf,'position',[945 424 762 502])
@@ -161,17 +162,71 @@ for i_job = 1:length(jobtags)
     hold on
 end
     
+%% contribution of variables to Dim 1-nPC
+nPC = 2;
+nVar = length(parameter_update_names);
 
-% View the data and the original variables (parameters that varied during MCMC) 
-% in the space of the first three principal components
-% vbls = {'a80', 'ag80'};
-% locb_all = [];
-% for vbl = vbls
-%     [~,locb] = ismember(vbl, parameter_update_names);
-%     locb_all = [locb_all;locb];
-% end
-% 
-% biplot(coeff(locb_all,1:2), 'scores', score(locb_all,1:2), 'varlabels', vbls)
+latentWeight = latent(:)/sum(latent);   % the weight of each PC
+cutoff = sum(latentWeight(1:nPC))/nVar; % the average contribution as the cutoff
+contrib = zeros(nVar,1);
+for iPC = 1:nPC
+    contribPerDim = coeff(:, iPC) .^2 * latentWeight(iPC);
+    contrib = contrib+contribPerDim;    % weighted contribution to PC1-PCn of each original variable
+end
 
+figure
+set(gcf, 'position', [360 120 777 578])
+bar(contrib)
+hold on
+addzeroline2('ypos', cutoff, 'plotoption', {'color','r'})
+set(gca, 'XTick', 1:nVar)
+set(gca, 'XTickLabel', parameter_update_names)
+set(gca, 'XTickLabelRotation', 45)
+set(gca, 'FontSize', fontsize)
+title(sprintf('Contribution of variables to Dim 1-%s', num2str(nPC)))
 
+importantVar = find(contrib > cutoff);  % all the variables that possess a contribution above average
+[~,topVar] = sort(contrib, 'descend');  % the index of each variable in a descending sequence of contribution
+
+%% View the original variables (parameters that varied during MCMC)
+% in the space of the first two or three principal components
+figure
+set(gcf, 'position', [360 90 849 608])
+% the data points (observations) can also be shown in the same plot
+% due to our vast dataset, omit the data points here
+% for more information, check the documentation of biplot
+h = biplot(coeff(:,1:2),  'varlabels', parameter_update_names); % the first two PC plane
+set(gca, 'LineWidth', 1.5, 'FontSize', fontsize)
+
+% the handle of biplot consists of 3*nVar+1 rows
+% the first nVar rows are the lines, the second nVar rows are the points
+% (the end of each line), the third nVar rows are texts, and the last one
+% is the axis line.
+
+% set all the lines wider than default
+for i = 1:length(h)
+    h(i,:).LineWidth = 1.5;
+    % if there is a property called 'FontSize'
+    if isprop(h(i,:), 'FontSize')
+        h(i,:).FontSize = 12;
+        h(i,:).FontWeight = 'bold';
+    end
+end
+
+% if there are too many variables contributed above average
+% only show top 10 varibales
+if length(importantVar) > 10
+    top10 = topVar(1:10);
+    for i = [top10', nVar+top10']   % change the color of both lines and end points of lines
+        h(i,:).Color = [1 0 0];
+    end
+    
+else
+    for i = [importantVar', nVar+importantVar'] % change the color of both lines and end points of lines
+        h(i,:).Color = [1 0 0];
+    end  
+end
+
+% change the width of axis line
+h(end,:).LineWidth = 1;
 
