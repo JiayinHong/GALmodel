@@ -65,9 +65,16 @@ for i_job = 1:length(jobtags)
     
 end
 
+%% remove the repetitions in param_val_all
+[param_val_unique,ia,~] = unique(param_val_all, 'rows');   % param_val_unique contains all the unique values in the array
+% now re-map the strain(cluster) ID to the new unique array
+param_id_unique = param_id_all(ia);
+% clear the redundant dataset
+clear param_val_all
+clear param_id_all
 
 %% PCA and plot
-[coeff, score, latent] = pca(zscore(param_val_all));
+[coeff, score, latent] = pca(zscore(param_val_unique));
 
 fontsize = 12;
 markersize = 15;
@@ -88,12 +95,18 @@ cluster_names = {'wt', 'gal80d', 'mig1d'};
 figure
 set(gcf,'position',[945 424 762 502])
 for i_job = 1:length(jobtags)
-    scatter3(score(param_id_all==i_job,1),score(param_id_all==i_job,2),score(param_id_all==i_job,3));
+    scatter3(score(param_id_unique==i_job,1),score(param_id_unique==i_job,2),score(param_id_unique==i_job,3));
     hold on
 %     text(mean(score(param_id_all == i_job,1)), mean(score(param_id_all==i_job,2)), mean(score(param_id_all == i_job,3)), cluster_names{i_job}, 'color', 'k', 'fontsize', 15, 'fontweight', 'bold');
     
 end
 set(gca,'FontSize', fontsize, 'FontWeight', 'bold')
+
+% get the default RGB vector for each phenotype
+h = get(gca);
+wtC = h.ColorOrder(1,:);        % the color for wt
+gal80dC = h.ColorOrder(2,:);    % the color for gal80d
+mig1dC = h.ColorOrder(3,:);     % the color for mig1d
 
 xlabel('1st PC')
 ylabel('2nd PC')
@@ -109,7 +122,7 @@ set(gcf,'position',[484 152 1223 774])
 subplot(2,2,1)
 plot(score(:,1),score(:,2),'.','color',[0.7 0.7 0.7]);
 hold on
-plot(score(param_id_all==666,1),score(param_id_all==666,2),'d','MarkerFaceColor','red','markersize',6);
+plot(score(param_id_unique==666,1),score(param_id_unique==666,2),'d','MarkerFaceColor','red','markersize',6);
 title('PC1 vs PC2', 'fontsize', 12)
 legend({'non-MAP','MAP'}, 'FontSize', fontsize, 'FontWeight', 'bold', 'location', 'best')
 grid on
@@ -118,7 +131,7 @@ set(gca,'fontsize',12)
 subplot(2,2,2)
 plot(score(:,1),score(:,3),'.','color',[0.7 0.7 0.7]);
 hold on
-plot(score(param_id_all==666,1),score(param_id_all==666,3),'d','MarkerFaceColor','red','markersize',6);
+plot(score(param_id_unique==666,1),score(param_id_unique==666,3),'d','MarkerFaceColor','red','markersize',6);
 title('PC1 vs PC3', 'fontsize', 12)
 legend({'non-MAP','MAP'}, 'FontSize', fontsize, 'FontWeight', 'bold', 'location', 'best')
 grid on
@@ -127,7 +140,7 @@ set(gca,'fontsize',12)
 subplot(2,2,3)
 plot(score(:,2),score(:,3),'.','color',[0.7 0.7 0.7]);
 hold on
-plot(score(param_id_all==666,2),score(param_id_all==666,3),'d','MarkerFaceColor','red','markersize',6);
+plot(score(param_id_unique==666,2),score(param_id_unique==666,3),'d','MarkerFaceColor','red','markersize',6);
 title('PC2 vs PC3', 'fontsize', 12)
 legend({'non-MAP','MAP'}, 'FontSize', fontsize, 'FontWeight', 'bold', 'location', 'best')
 grid on
@@ -144,19 +157,19 @@ figure
 set(gcf,'position',[360 130 780 568])
 for i_job = 1:length(jobtags)
     subplot(2,2,1)
-    scatter(score(param_id_all==i_job,1),score(param_id_all==i_job,2))
+    scatter(score(param_id_unique==i_job,1),score(param_id_unique==i_job,2))
     title('PC1 vs PC2', 'fontsize', 12)
     set(gca,'fontsize',12)
     hold on
     
     subplot(2,2,2)
-    scatter(score(param_id_all==i_job,1),score(param_id_all==i_job,3))
+    scatter(score(param_id_unique==i_job,1),score(param_id_unique==i_job,3))
     title('PC1 vs PC3', 'fontsize', 12)
     set(gca,'fontsize',12)
     hold on
     
     subplot(2,2,3)
-    scatter(score(param_id_all==i_job,2),score(param_id_all==i_job,3))
+    scatter(score(param_id_unique==i_job,2),score(param_id_unique==i_job,3))
     title('PC2 vs PC3', 'fontsize', 12)
     set(gca,'fontsize',12)
     hold on
