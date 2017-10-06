@@ -6,7 +6,7 @@ function [violins, catnames] = violinplot(data, cats, varargin)
 %   DATAMATRIX.
 %
 %   VIOLINPLOT(TABLE), VIOLINPLOT(STRUCT), VIOLINPLOT(DATASET)
-%   plots violins for each row in TABLE, each field in STRUCT, and
+%   plots violins for each column in TABLE, each field in STRUCT, and
 %   each variable in DATASET. The violins are labeled according to
 %   the table/dataset variable name or the struct field name.
 %
@@ -42,6 +42,8 @@ function [violins, catnames] = violinplot(data, cats, varargin)
 %                    Defaults to true
 %     'ShowNotches'  Whether to show notch indicators.
 %                    Defaults to false
+%     'ShowMean'     Whether to show mean indicator
+%                    Defaults to false
 
 % Copyright (c) 2016, Bastian Bechtold
 % This code is released under the terms of the BSD 3-clause license
@@ -59,21 +61,18 @@ function [violins, catnames] = violinplot(data, cats, varargin)
         end
         catnames = {};
         for n=1:length(colnames)
-            if isnumeric(data.(colnames{n})) & numel(data.(colnames{n}))~=1
+            if isnumeric(data.(colnames{n}))
                 catnames = [catnames colnames{n}];
             end
         end
         for n=1:length(catnames)
             thisData = data.(catnames{n});
-            %%%%%%%%%%%%%%%%
-            tmp={cats,varargin{1}}; % hack to get the variables passed through correctly
-            violins(n) = Violin(thisData, n,tmp{:});
-            %%%%%%%%%%%%%%%%
+            violins(n) = Violin(thisData, n, varargin{:});
         end
         set(gca, 'xtick', 1:length(catnames), 'xticklabels', catnames);
 
     % 1D data, one category for each data point
-    elseif hascategories && length(data) == length(cats)
+    elseif hascategories && numel(data) == numel(cats)
         cats = categorical(cats);
         catnames = categories(cats);
         for n=1:length(catnames)
@@ -85,14 +84,14 @@ function [violins, catnames] = violinplot(data, cats, varargin)
 
     % 1D data, no categories
     elseif not(hascategories) && isvector(data)
-        violins = Violin(data, 1);
+        violins = Violin(data, 1, varargin{:});
         set(gca, 'xtick', 1);
 
     % 2D data with or without categories
     elseif ismatrix(data)
         for n=1:size(data, 2)
             thisData = data(:, n);
-            violins(n) = Violin(thisData, n);
+            violins(n) = Violin(thisData, n, varargin{:});
         end
         set(gca, 'xtick', 1:size(data, 2));
         if hascategories && length(cats) == size(data, 2)
