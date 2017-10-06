@@ -147,23 +147,23 @@ switch version
         % first, heatmap for the expt trait
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-        h=title(sprintf('%s expt G1 induced level', dataType));
-        export_fig(fullfile(saveDir, h.String))
+        heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        title(sprintf('%s expt G1 induced level', dataType));
+        export_fig(fullfile(saveDir, get(gca, 'Title')))
 
         % second, heatmap for simulation results
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-        h=title(sprintf('%s simulation G1 induced level', dataType));
-        export_fig(fullfile(saveDir, h.String))
+        heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        title(sprintf('%s simulation G1 induced level', dataType));
+        export_fig(fullfile(saveDir, get(gca, 'Title')))
 
         % then, difference heatmap
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 8);
-        h=title(sprintf('The deviation heatmap - %s', dataType));
-        export_fig(fullfile(saveDir, h.String))
+        heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        title(sprintf('The deviation heatmap - %s', dataType));
+        export_fig(fullfile(saveDir, get(gca, 'Title')))
 
 end
 
