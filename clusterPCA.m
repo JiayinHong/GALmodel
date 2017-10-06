@@ -6,30 +6,34 @@ mcmc_result = sortrows(mcmc_result, 'map_data_over_param', 'descend');
 mcmc_result_filter = mcmc_result(mcmc_result.map_data_over_param > -86,:);
 
 %% fetch parameter values - only MAP
-param_val_all = [];
-param_id_all = [];
-
-for i_job = 1:length(jobtags)
+% we are now analyzing all the data that are above a probability threshold,
+% not just MAP, so do not run this hunk of code for now.
+if 0
+    param_val_all = [];
+    param_id_all = [];
     
-    mcmc_result_tmp = mcmc_result_filter(ismember(mcmc_result_filter.jobtag, jobtags{i_job}),:);
-    load(mcmc_result_tmp{1, 'filepath'}{1}, 'parameter_update');
-    
-    parameter_update_names = parameter_update.parameter_name;
-    n_sample = height(mcmc_result_tmp);
-    n_param_update = height(parameter_update);
-    param_map_val = nan(n_sample, n_param_update);
-    
-    for i_sample = 1:n_sample
-        param_map = mcmc_result_tmp{i_sample, 'param_map'};
-        for i_param_update = 1:n_param_update
-            param_map_val(i_sample, i_param_update) = log10(param_map.(parameter_update_names{i_param_update}));
+    for i_job = 1:length(jobtags)
+        
+        mcmc_result_tmp = mcmc_result_filter(ismember(mcmc_result_filter.jobtag, jobtags{i_job}),:);
+        load(mcmc_result_tmp{1, 'filepath'}{1}, 'parameter_update');
+        
+        parameter_update_names = parameter_update.parameter_name;
+        n_sample = height(mcmc_result_tmp);
+        n_param_update = height(parameter_update);
+        param_map_val = nan(n_sample, n_param_update);
+        
+        for i_sample = 1:n_sample
+            param_map = mcmc_result_tmp{i_sample, 'param_map'};
+            for i_param_update = 1:n_param_update
+                param_map_val(i_sample, i_param_update) = log10(param_map.(parameter_update_names{i_param_update}));
+            end
         end
+        
+        % use id to distinguish between wt and mutants clusters
+        param_map_id = repmat(i_job,[n_sample,1]);
+        param_val_all = [param_val_all; param_map_val];
+        param_id_all = [param_id_all; param_map_id];
     end
-    
-    % use id to distinguish between wt and mutants clusters
-    param_map_id = repmat(i_job,[n_sample,1]);
-    param_val_all = [param_val_all; param_map_val];
-    param_id_all = [param_id_all; param_map_id];
 end
 
 %% fetch parameter values - posterior distribution beyond a threshold
@@ -242,4 +246,82 @@ end
 
 % change the width of axis line
 h(end,:).LineWidth = 1;
+
+
+
+%% violin plot revealing parameter value difference underlying wt and mutants
+% only valid for plotting wt/mig1d/gal80d data
+
+% first, get the subset parameter values from 'param_val_unique'
+wtParamVal = param_val_unique(param_id_unique==1,:);
+gal80dParamVal = param_val_unique(param_id_unique==2,:);
+mig1dParamVal = param_val_unique(param_id_unique==3,:);
+
+% then, initialize the structs
+wtViolin = struct();
+gal80dViolin = struct();
+mig1dViolin = struct();
+
+% store the value into the struct based on the fieldnames
+for i_param_update = 1:n_param_update
+    field_name = parameter_update_names{i_param_update};
+    wtViolin.(field_name) = wtParamVal(:,i_param_update);
+    gal80dViolin.(field_name) = gal80dParamVal(:,i_param_update);
+    mig1dViolin.(field_name) = mig1dParamVal(:,i_param_update);
+end
+
+% to free some memory
+clear wtParamVal
+clear gal80dParamVal
+clear mig1dParamVal
+
+% now, make the plot
+figure
+set(gcf, 'position', [1946 145 1653 768])
+hold all
+
+%% Violin plot, usually takes ~20s
+% It would be extremely slow if turning on the option - ShowData
+% 'ViolinAlpha' is used to tune the transparency of the violins
+% I hacked the function 'violinplot' to add an option 'Strain' in order to
+% specify the plotting position for certain strain
+% the color for all the violins should match the PCA plot
+
+tic
+violinplot(wtViolin,[], 'ViolinColor',wtC, 'Strain','wt', 'ShowData',false, 'ViolinAlpha',1);    % [ ] - no categories
+
+violinplot(gal80dViolin,[], 'ViolinColor',gal80dC, 'Strain','gal80d', 'ShowData',false, 'ViolinAlpha',1);
+
+[~,catnames] = violinplot(mig1dViolin,[], 'ViolinColor',mig1dC, 'Strain','mig1d', 'ShowData',false, 'ViolinAlpha',1);
+toc
+
+%% add transparent grey shade to the plot
+for i = 0:2:n_param_update     % add shade to every other parameter
+    hShade = patch([1+2*i 1+2*i, 3+2*i 3+2*i],[min(ylim) max(ylim) max(ylim) min(ylim)]...
+        ,[0.8 0.8 0.8], 'EdgeColor','none', 'FaceAlpha', .3);   % set FaceAlpha=.3 to make the grey shade transparent
+    uistack(hShade,'bottom')    % move the shade layer to bottom 
+end
+
+%% finely tune the graph
+set(gca, 'FontSize', 12)
+set(gca, 'FontWeight', 'bold')
+set(gca, 'XTickLabelRotation', 45)
+
+% adjust the appearance of YLabel
+hY = get(gca, 'YLabel');
+hY.String = sprintf('log_1_0  parameter value');
+hY.FontSize = 16;
+hY.FontWeight = 'bold';
+
+% adjust XTick and XTickLabel
+nParam = length(catnames);
+set(gca, 'XTick', 2*[1:nParam])
+xTickLabel = catnames;
+
+% add custom legend
+h = zeros(3, 1);
+h(1) = plot(NaN,NaN,'Marker','d','Color',wtC);
+h(2) = plot(NaN,NaN,'Marker','d','Color',gal80dC);
+h(3) = plot(NaN,NaN,'Marker','d','Color',mig1dC);
+legend(h, cluster_names, 'FontSize',fontsize, 'FontWeight','bold');
 
