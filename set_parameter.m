@@ -275,10 +275,7 @@ switch param_set_i
         param.nR4 = 1;
         param.nRs = 2;
         
-    case 6      % use alpha*KMglu to replace KMgal
-        % use beta*kglu to replace kgal
-        % remove kfR, krR; add KRs, nRs
-        % make nR1, nR3, and nR4 = 1
+    case 6     % add GAL1 catalyzed breakdown of galactose, match 'GALode7'
         
         param.a1 = 0.001; % not able to generate a random number from lognormal distribution whose mu=log0
         param.a2 = 0;
@@ -308,18 +305,20 @@ switch param_set_i
         param.KG2 = 66.6;       % no experimental data available
         param.KG3 = 32.2;       % no experimental data available
         param.KG80 = 14;
-        param.KR1 = 67.4 * 10^4;
-        param.KR3 = 18.8 * 10^4;       % no experimental data available
-        param.KR4 = 33.8 * 10^4;
-        param.KRs = 10;        % arbitrary picked value
+        param.KR1 = 67.4;
+        param.KR3 = 18.8;       % no experimental data available
+        param.KR4 = 33.8;
+        param.KRs = 300;        % comparable value to internal gluc
         
         % the following sugar transportation rate and KMs referred to
         % Bennett's model, the KMs were adapted based on experimental data
         param.kglu = 4350;
         param.beta = 1;
-        param.KMglu = 7.5*10^5;
-        param.alpha = 200;
-        %         param.KMgal = 3*10^6 * 10;  % Aug1st update, more biological plausible
+        %         param.kgal = 4350;
+        param.KMglu = 7.5*10^5 * 10;    % to get rid of eternal saturation
+        param.alpha = 200;   
+        
+        param.dg1 = 0.002;       % the rate constant of GAL1 catalyzed breakdown of galactose
         
         % the following Hill coefficient referred to Venturelli's model
         param.n1 = 3;
