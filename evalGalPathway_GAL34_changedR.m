@@ -70,6 +70,7 @@ else
 end
 
 % finally, sum up all three obj
+output.GAL1_obj = GAL1_obj;
 output.GAL3_obj = GAL3_obj;
 %%%%%%%%%%%% adjust GAL3 weighting %%%%%%%%%%
 GAL3_obj = GAL3_obj / 10;

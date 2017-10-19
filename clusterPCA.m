@@ -3,7 +3,10 @@ mcmc_data_folder = '../results/singleTrans-96well/';
 jobtags = {'wildtype_96well', 'gal80d_96well', 'mig1d_96well'};
 mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
 mcmc_result = sortrows(mcmc_result, 'map_data_over_param', 'descend');
-mcmc_result_filter = mcmc_result(mcmc_result.map_data_over_param > -86,:);
+
+%% decide a threshold to filter data
+prob_thresh = -81;
+mcmc_result_filter = mcmc_result(mcmc_result.map_data_over_param > prob_thresh,:);
 
 %% fetch parameter values - only MAP
 % we are now analyzing all the data that are above a probability threshold,
@@ -51,7 +54,7 @@ for i_job = 1:length(jobtags)
     for i_chain = 1:n_chain
         prob_list = mcmc_result_tmp{i_chain, 'prob_data_over_parameter_list'}{1};
         param_list = mcmc_result_tmp{i_chain, 'param_list'};
-        filter_id = find(prob_list > -86);
+        filter_id = find(prob_list > prob_thresh);
         [~,I] = max(prob_list);
         II = find(I==filter_id);    % the index of MAP
         param_chain = nan(length(filter_id), n_param_update);
@@ -270,15 +273,10 @@ for i_param_update = 1:n_param_update
     mig1dViolin.(field_name) = mig1dParamVal(:,i_param_update);
 end
 
-% to free some memory
+%% to free some memory
 clear wtParamVal
 clear gal80dParamVal
 clear mig1dParamVal
-
-% now, make the plot
-figure
-set(gcf, 'position', [1946 145 1653 768])
-hold all
 
 %% Violin plot, usually takes ~20s
 % It would be extremely slow if turning on the option - ShowData
@@ -286,6 +284,10 @@ hold all
 % I hacked the function 'violinplot' to add an option 'Strain' in order to
 % specify the plotting position for certain strain
 % the color for all the violins should match the PCA plot
+
+figure
+set(gcf, 'position', [1946 145 1653 768])
+hold all
 
 tic
 violinplot(wtViolin,[], 'ViolinColor',wtC, 'Strain','wt', 'ShowData',false, 'ViolinAlpha',1);    % [ ] - no categories
