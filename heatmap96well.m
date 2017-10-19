@@ -25,9 +25,10 @@
 % 
 % dataType = 'wildtype';      % 'wildtype' / 'mig1d' / 'gal80d'
 % version = 'R2016a';         % 'R2016a' / 'R2017a'
-% heatmap96well(param, dataType, version)
+% plot_heatmap(param, dataType, version)
 
-function heatmap96well(param, dataType, version)
+% function heatmap96well(param, dataType, version)
+function plot_heatmap(param, dataType, version)
 %   This function is adapted from a previous script, used to plot 96-well
 %   heatmap for wildtype/mig1d/gal80d and simulation results comparison,
 %   also, compress the simulation result in eith direction and draw the
@@ -101,11 +102,15 @@ end
 simG1_ind = output.all_conc_Gal(:,1);
 simG1_basal = output.all_conc_Glu(:,1);
 
+% get GAL1 obj
+GAL1_obj = output.G1obj;
+
 %% simple calculation
-logAllData = log(alldata);
-logSimG1 = log(simG1_96well);
+logAllData = log10(alldata);
+logSimG1 = log10(simG1_96well);
 logdelta = logSimG1 - logAllData;   % the deviation in log scale
 % lindelta = simG1_96well - alldata;  % the deviation in linear scale
+fprintf('\nthe total difference: %.2f\n', nansum(abs(logdelta(:))))
 
 %% draw heatmap
 switch version
@@ -136,9 +141,10 @@ switch version
         figure
         set(gcf, 'position', [689 136 1036 811])
         heatmap(logdelta, rowLabels, colLabels, '%.2f' ...
+            , 'MinColorValue', -1, 'MaxColorValue', 1 ...  % to normalize among different heatmaps
             , 'ShowAllTicks', true, 'TextColor', 'r', 'FontSize', 14, 'Colorbar', true ...
             , 'GridLines', ':', 'ColorLevels', 128, 'TickFontSize', 15);
-        h=title(sprintf('The deviation heatmap - %s', dataType), 'FontSize', 15);
+        h=title(sprintf('The deviation heatmap - %s, obj=%.2f', dataType, GAL1_obj), 'FontSize', 15);
         xlabel('galactose titration')
         ylabel('glucose titration')
         export_fig(fullfile(saveDir, h.String))
@@ -162,7 +168,7 @@ switch version
         figure
         set(gcf, 'position', [689 136 1036 811])
         heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 12);
-        title(sprintf('The deviation heatmap - %s', dataType));
+        title(sprintf('The deviation heatmap - %s, obj=%.2f', dataType, GAL1_obj));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
 end
