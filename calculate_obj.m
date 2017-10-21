@@ -30,6 +30,7 @@ experiment_result = log10(experiment_result_linear);
 
 sum_obj = (simulation_result - experiment_result).^2 .* mask;
 
-sum_obj = sum(sum_obj(:));
+sum_obj = nansum(sum_obj(:));   % if there's NaN in the array, 
+                    % just omit it and sum up the other difference
 
 end
