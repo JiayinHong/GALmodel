@@ -69,7 +69,7 @@ if 0
         set(gcf, 'position', [2049 418 1065 411])
         iStr=[];
         j=1;
-        for fdn = strainSet1                % select a couple of strains to draw on the same plot
+        for fdn = strainContainNaN                % select a couple of strains to draw on the same plot
             tmp = obj_all.(fdn{1});
             plot(1:nValue, tmp(i_param,1:nValue), 'LineWidth', 1.5, 'Marker', 'o')
             iStr(j) = str2num(fdn{1}(4:end));   % iStr stores the strains that have been drawn
@@ -95,14 +95,13 @@ if 0
         set(gca, 'YScale', 'log')
         set(gca, 'FontSize', 12, 'FontWeight', 'bold', 'FontName', 'Helvetica')
         
-        export_fig(fullfile(outpath, sprintf('%s vary in logspace - Set1', param_name)));
+        export_fig(fullfile(outpath, sprintf('%s vary in logspace - SetNaN', param_name)));
         
     end
 end
 
 %% this section is used to visualize the trait in a heatmap
-% for i=3:length(allTraits)
-for i=3
+for i=3:length(allTraits)
     tmp = allTraits(i).name;
     filename = tmp(1:end-4);
     load(sprintf('../traitExtraction/%s', tmp))
