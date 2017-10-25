@@ -10,12 +10,12 @@ base_param = param_map;
 param_names = parameter_update.parameter_name;
 
 %% calculate single parameter scan obj values and store
-
-allTraits = dir('../traitExtraction/');
+traitsFolder = '../fakeTraits/';
+allTraits = dir(traitsFolder');
 obj = struct();     % store the results in a struct, with a fieldname naming after the strainID
 clear trait
 fileName = allTraits(strainID).name;
-load(fullfile('../traitExtraction/', fileName))     % load certain strain trait
+load(fullfile(traitsFolder, fileName))     % load certain strain trait
 for i_param = 1:length(param_names)
     tmp(i_param,:) = ParamScan2(base_param, param_names(i_param), trait);
 end
