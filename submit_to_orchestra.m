@@ -16,6 +16,11 @@ folder = '../metaData/singleTrans-96well/';
 %% use intracellular glucose concentration to replace all Mig1* in the equations
 base_param = set_parameter(3);  % nR1=nR3=nR4=1
 parameter_update = readtable('Aug25th_param_config_set3.csv');
+
+base_param.ag3 = 0; % to verify Mike's prediction
+parameter_update{2,'prior_sigma'} = 1;
+parameter_update{2,'proposal_sigma_1'} = 0.9;
+
 % fit one column
 % load('../metaData/trait_extraction/S288C-double_gradient/wildtype_1c.mat')
 % rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'medium-wildtype_1c', folder);
@@ -32,19 +37,17 @@ rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'wil
 
 % fit all 96well data, mig1d
 load('../metaData/trait_extraction/S288C-double_gradient/mig1d_all_data.mat')
-parameter_update = readtable('Aug25th_param_config_set3.csv');
 mig1d_param = base_param;
-% mig1d_param.aR = 0.001;
+mig1d_param.aR = 0.001;
 % parameter_update{5,'prior_sigma'} = 1;    % no constrain on aR
 % parameter_update{5,'proposal_sigma_1'} = 0.7;     % in case the initial value is ridiculous, a bigger step size is needed
 rand_init_generator(n_init, trait, n_propose, mig1d_param, parameter_update, 'mig1d_96well', folder);
 
 % fit all 96well data, gal80d
 load('../metaData/trait_extraction/S288C-double_gradient/gal80d_all_data.mat')
-parameter_update = readtable('Aug25th_param_config_set3.csv');
 gal80d_param = base_param;
-% gal80d_param.a80 = 0.001;
-% gal80d_param.ag80 = 0.001;
+gal80d_param.a80 = 0.001;
+gal80d_param.ag80 = 0.001;
 % parameter_update{[4,9], 'prior_sigma'} = 1;    % no constrain on a80, ag80
 % parameter_update{[4,9], 'proposal_sigma_1'} = 0.7;
 rand_init_generator(n_init, trait, n_propose, gal80d_param, parameter_update, 'gal80d_96well', folder);
