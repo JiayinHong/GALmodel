@@ -6,8 +6,8 @@ function  [ all_conc_Glu, all_conc_Gal ] = param_fitting_plot_GAL234( param, tra
 % 2017.07.11 by JH
 
 output = evalGalPathway_GAL34_changedR( param, trait, G2level, G3level, G4level, fit_type );
-% all_conc_Glu = output.all_conc_Glu;
-% all_conc_Gal = output.all_conc_Gal;
+all_conc_Glu = output.all_conc_Glu;
+all_conc_Gal = output.all_conc_Gal;
 
 % it was a bug since the sequence of output.all_conc_Glu is in the original
 % one as the trait (unsorted), I fixed it by sorting all_conc_Glu in the
@@ -40,10 +40,10 @@ eval_tab = table(G3level...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [~,id] = sort(eval_tab.sugar_ratio, 'ascend');
-all_conc_Glu = output.all_conc_Glu(id, :);
-all_conc_Gal = output.all_conc_Gal(id, :);
+% all_conc_Glu = output.all_conc_Glu(id, :);
+% all_conc_Gal = output.all_conc_Gal(id, :);
 
-eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
+% eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
 
 n_condition = height(eval_tab);
 markersize = 6;

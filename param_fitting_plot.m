@@ -3,8 +3,8 @@ function  [ all_conc_Glu, all_conc_Gal ] = param_fitting_plot( param, trait, fit
 % or one cross of double gradient data
 
 output = evalGalPathway( param, trait, fit_type );
-% all_conc_Glu = output.all_conc_Glu;   
-% all_conc_Gal = output.all_conc_Gal;
+all_conc_Glu = output.all_conc_Glu;   
+all_conc_Gal = output.all_conc_Gal;
 
 % it was a bug since the sequence of output.all_conc_Glu is in the original
 % one as the trait (unsorted), I fixed it by sorting all_conc_Glu in the
@@ -43,10 +43,10 @@ eval_tab = table(output.experiment_result_linear(:,1)...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [~,id] = sort(eval_tab.sugar_ratio, 'ascend');
-all_conc_Glu = output.all_conc_Glu(id, :);
-all_conc_Gal = output.all_conc_Gal(id, :);
+% all_conc_Glu = output.all_conc_Glu(id, :);
+% all_conc_Gal = output.all_conc_Gal(id, :);
 
-eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
+% eval_tab = sortrows(eval_tab, 'sugar_ratio', 'ascend');
 
 n_condition = height(eval_tab);
 markersize = 5;
@@ -69,7 +69,7 @@ plot(eval_tab{:,'sim_basal'}, 'k-', 'linewidth', 2)
 plot(eval_tab{:,'sim_induce'}, 'r-', 'linewidth', 2)
 set(gca, 'yscale', 'log')
 xlim([0, n_condition+1])
-title(sprintf('%s - obj : %1.4f', changeunderscore(fit_type), output.sum_obj))
+title(sprintf('%s - obj : %1.4f', changeunderscore(fit_type), output.G1obj))
 % title(num2str(output.sum_obj, 'obj: %1.2f'))
 
 
