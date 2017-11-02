@@ -125,7 +125,9 @@ dMig1tot = aR - d * Mig1tot;
 dC83 = C83_f - C83_r - d * C83;
 dC84 = C84_f - C84_r - d * C84;
 dglu = kglu * exglu/(exglu + KMglu) - dsugar * glu;
-dgal = beta*kglu * exgal/(alpha * exglu + exgal + alpha*KMglu) - G3star_f + G3star_r  - dg1 * G1 * gal;
+% 2017.11.1 update, make the consumption of galactose come from two parts:
+% 1.by dilution; 2.by GAL1 catalyzed breakdown
+dgal = beta*kglu * exgal/(alpha * exglu + exgal + alpha*KMglu) - G3star_f + G3star_r  - dg1 * G1 * gal - d * gal;
 
 dydt = ...
     [ dG1 ...
