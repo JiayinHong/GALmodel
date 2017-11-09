@@ -70,7 +70,17 @@ heatmap(rowLabels, colLabels, mySortedData, 'Colormap', Cmap ...
     , 'ColorScaling', 'log' ...
     , 'ColorLimits', [log(.1), log(100)], 'FontSize', 12);
 
-% plot a dendrogram tree to view the dissimilarity between the perturbations
+% heatmap with bi-directional cluster and dendrogram
+% CG = clustergram(mySortedData, 'RowLabels',colLabels, 'ColumnLabels',rowLabels ...
+%     , 'Standardize','none', 'Cluster','all', 'Colormap',Cmap ...
+%     , 'LogTrans', 1);
+% cgAxes = plot(CG);
+% set(gcf, 'position', [360 50 569 655])
+% % 'LogTrans' transform the data from natural scale to log2 scale
+% set(cgAxes, 'Clim', [log2(.1), log2(100)], 'FontSize', 12)
+
+
+%% plot a dendrogram tree to view the dissimilarity between the perturbations
 
 % mySortedData is Strains * Perturbations, since we'd like to know which
 % clusters of perturbations have similar effect to the system, so we need
@@ -152,6 +162,7 @@ colLabels = pickedStrains;
 % make heatmap
 Cmap = flipud(parula);
 Climits = [min(myPickedData(:)), max(myPickedData(:))];
+% Z_Climits = [min(zscore(myPickedData(:))), max(zscore(myPickedData(:)))];
 
 % heatmap without cluster or dendrogram tree
 figure
@@ -165,5 +176,4 @@ CG = clustergram(myPickedData, 'RowLabels',colLabels, 'ColumnLabels',rowLabels .
 cgAxes = plot(CG);
 set(gcf, 'position', [397 99 810 552])
 set(cgAxes, 'Clim', Climits, 'FontSize', 12)
-
 

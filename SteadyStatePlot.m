@@ -5,22 +5,14 @@ load('../metaData/trait_extraction/GAL4pr_all_data.mat')
 G4level = trait.basal_level;
 
 %% load parameter, trait, and fit type
-
-i_example = 1;
+i_example = 36;
 jobtag = mcmc_result{i_example, 'jobtag'};
 param = mcmc_result{i_example, 'param_map'};
-trait = mcmc_result{i_example, 'trait'}{1};
-fit_type = 'one_row';
-
-%% load parameter, trait, and fit type
-
-i_example = 2;
-jobtag = mcmc_old_result{i_example, 'jobtag'};
-param = mcmc_old_result{i_example, 'param_map'};
-trait = mcmc_old_result{i_example, 'trait'}{1};
+load(mcmc_result{i_example,'filepath'}{1},'GAL1_trait')  % load trait
 fit_type = 'one_column';
 
 %% plot for 11 species excluding R*
+if 0
 clear lo_state hi_state Mig1star
 figure
 set(gcf, 'position', [298 107 1182 856])
@@ -30,13 +22,13 @@ fontsize = 12;
 subplot(4,5,1)
 % show how GAL1 level fits, also get steady state concentrations for 11
 % species
-[lo_state(:,:), hi_state(:,:)] = param_fitting_plot(param, trait, fit_type);
+[lo_state(:,:), hi_state(:,:)] = param_fitting_plot(param, GAL1_trait, fit_type);
 subplot(4,5,6)
 % show how GAL3 level fits
-param_fitting_plot_GAL234(param, trait, 0, G3level, G4level, fit_type, 'G3');
+param_fitting_plot_GAL234(param, GAL1_trait, 0, G3level, G4level, fit_type, 'G3');
 subplot(4,5,11)
 % show how GAL4 level fits
-param_fitting_plot_GAL234(param, trait, 0, G3level, G4level, fit_type, 'G4');
+param_fitting_plot_GAL234(param, GAL1_trait, 0, G3level, G4level, fit_type, 'G4');
 
 % show the steady state concentrations for 11 species and free+complex
 species_list = {'G1', 'G2', 'G3', 'G4', 'G80', 'G3*', 'Mig1tot', 'C83', 'C84', 'glu', 'gal'};
@@ -120,7 +112,7 @@ grid on
 subplot(4,5,19) % G4+C84
 
 plot(1:n_condition, (hi_state(:,4) + hi_state(:,9)), '.', 'markersize', markersize)
-ytickformat('%.2f')     % specify the tick label format of 'G4+C84'
+% ytickformat('%.2f')     % specify the tick label format of 'G4+C84'
 xlim([0 n_condition+1])
 set(gca, 'FontSize', fontsize)
 title('G4+C84', 'FontSize', fontsize)
@@ -129,7 +121,7 @@ grid on
 jobtag = changeunderscore(jobtag{1});
 [ax,h] = suplabel(sprintf('The no.%s example, %s', num2str(i_example), jobtag), 't');
 h.FontSize = 13;
-
+end
 %% plot for 12 species including R*
 clear lo_state hi_state
 figure
@@ -140,13 +132,13 @@ fontsize = 12;
 subplot(4,5,1)
 % show how GAL1 level fits, also get steady state concentrations for 12
 % species
-[lo_state(:,:), hi_state(:,:)] = param_fitting_plot(param, trait, fit_type);
+[lo_state(:,:), hi_state(:,:)] = param_fitting_plot(param, GAL1_trait, fit_type);
 subplot(4,5,6)
 % show how GAL3 level fits
-param_fitting_plot_GAL234(param, trait, 0, G3level, G4level, fit_type, 'G3');
+param_fitting_plot_GAL234(param, GAL1_trait, 0, G3level, G4level, fit_type, 'G3');
 subplot(4,5,11)
 % show how GAL4 level fits
-param_fitting_plot_GAL234(param, trait, 0, G3level, G4level, fit_type, 'G4');
+param_fitting_plot_GAL234(param, GAL1_trait, 0, G3level, G4level, fit_type, 'G4');
 
 % show the steady state concentrations for 12 species and free+complex
 species_list = {'G1', 'G2', 'G3', 'G4', 'G80', 'G3*', 'Mig1', 'Mig1*', 'C83', 'C84', 'glu', 'gal'};
@@ -205,7 +197,7 @@ set(gca, 'FontSize', fontsize)
 title('G4+C84', 'FontSize', fontsize)
 grid on
 
-subplot(4,5,20) % R+R*
+ax20 = subplot(4,5,20); % R+R*
 
 plot(1:n_condition, (hi_state(:,7) + hi_state(:,8)), '.', 'markersize', markersize)
 xlim([0 n_condition+1])
@@ -213,3 +205,5 @@ set(gca, 'FontSize', fontsize)
 title('Mig1+Mig1*', 'FontSize', fontsize)
 grid on
 
+shortTickLabel = cellfun(@(s) sprintf('%.6s',s), ax20.YTickLabel, 'UniformOutput',false);
+ax20.YTickLabel = shortTickLabel;

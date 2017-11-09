@@ -16,16 +16,16 @@
 % 
 % jobtags = {'wildtype_96well', 'gal80d_96well', 'mig1d_96well'};
 % mcmc_result = load_mcmc_result(mcmc_data_folder, jobtags);
-% 
+
 % mcmc_result = sortrows(mcmc_result,'map_data_over_param','descend');    % when prior is included
 % mcmc_result = sortrows(mcmc_result,'param_prob_map','descend');         % when there's no prior
-% 
-% i_example = 1;
-% param = mcmc_result{i_example, 'param_map'};
-% 
-% dataType = 'wildtype';      % 'wildtype' / 'mig1d' / 'gal80d'
-% version = 'R2016a';         % 'R2016a' / 'R2017a'
-% plot_heatmap(param, dataType, version)
+%% 
+i_example = 54;
+param = mcmc_result{i_example, 'param_map'};
+
+dataType = 'wildtype';      % 'wildtype' / 'mig1d' / 'gal80d'
+version = 'R2017a';         % 'R2016a' / 'R2017a'
+plot_heatmap(param, dataType, version)
 
 % function heatmap96well(param, dataType, version)
 function plot_heatmap(param, dataType, version)
@@ -150,24 +150,30 @@ switch version
         export_fig(fullfile(saveDir, h.String))
 
     case 'R2017a'
+        Cmap = parula;
+        
         % first, heatmap for the expt trait
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, alldata, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        heatmap(rowLabels, colLabels, alldata, 'Colormap', Cmap ...
+        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
         title(sprintf('%s expt G1 induced level', dataType));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
         % second, heatmap for simulation results
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, simG1_96well, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        heatmap(rowLabels, colLabels, simG1_96well, 'Colormap', Cmap ...
+        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
         title(sprintf('%s simulation G1 induced level', dataType));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
         % then, difference heatmap
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, logdelta, 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        heatmap(rowLabels, colLabels, logdelta, 'Colormap', Cmap ...
+        , 'ColorLimits', [-1 1] ...
+        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
         title(sprintf('The deviation heatmap - %s, obj=%.2f', dataType, GAL1_obj));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
