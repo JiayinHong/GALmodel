@@ -7,7 +7,7 @@ for i_param = 1:length(parameter_name)
     param_init_value(i_param) = param_init.(param_name);
 end
 
-if ~isdir('../results/fminsearch');
+if ~isdir('../results/fminsearch')
     mkdir('../results/fminsearch');
 end
 
