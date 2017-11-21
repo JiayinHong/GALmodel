@@ -2,6 +2,17 @@
 % to run on slurm
 % the core of the script has been modified to a function, take folder name, jobtag and fit type as input
 
+%% generate shell scripts for BADS algorithm
+algorithm = 'bads';
+jobtag_list = {'wildtype_96well'};
+folder_name = '../metaData/noCompeteBinding/';
+fit_type = '96well';
+for jobtag = jobtag_list
+    jobtag = jobtag{1};
+    shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
+end
+
+%% generate shell scripts to fit GAL1,3,4 in all 96 well data
 algorithm_list = {'mcmc', 'fminsearch'};
 jobtag_list = {'wildtype_1r', 'mig1d_1r', 'gal80d_1r', 'triple_fit_1r', ...
     'wildtype_1c', 'mig1d_1c', 'gal80d_1c', 'triple_fit_1c', ...
