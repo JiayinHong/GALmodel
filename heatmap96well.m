@@ -155,16 +155,17 @@ switch version
         % first, heatmap for the expt trait
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, alldata, 'Colormap', Cmap ...
-        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        h1=heatmap(rowLabels, colLabels, alldata, 'Colormap', Cmap ...
+            , 'CellLabelFormat', '%.2f', 'FontSize', 12);
         title(sprintf('%s expt G1 induced level', dataType));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
         % second, heatmap for simulation results
         figure
         set(gcf, 'position', [689 136 1036 811])
-        heatmap(rowLabels, colLabels, simG1_96well, 'Colormap', Cmap ...
-        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        h2=heatmap(rowLabels, colLabels, simG1_96well, 'Colormap', Cmap ...
+            , 'CellLabelFormat', '%.2f', 'FontSize', 12);
+        h2.ColorLimits = h1.ColorLimits;    % force the second heatmap has the same colorbar with the first one
         title(sprintf('%s simulation G1 induced level', dataType));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
@@ -172,8 +173,8 @@ switch version
         figure
         set(gcf, 'position', [689 136 1036 811])
         heatmap(rowLabels, colLabels, logdelta, 'Colormap', Cmap ...
-        , 'ColorLimits', [-1 1] ...
-        , 'CellLabelFormat', '%.2f', 'FontSize', 12);
+            , 'ColorLimits', [-1 1] ...
+            , 'CellLabelFormat', '%.2f', 'FontSize', 12);
         title(sprintf('The deviation heatmap - %s, obj=%.2f', dataType, GAL1_obj));
         export_fig(fullfile(saveDir, get(gca, 'Title')))
 
