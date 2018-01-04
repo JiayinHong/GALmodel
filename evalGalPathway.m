@@ -39,15 +39,13 @@ induction_level = y_ss_Gal(:,1);
 % [output.G1obj, ~, ~] = calculate_obj( trait, basal_level, induction_level );
 % [output.G1obj, ~, ~] = calculate_obj_fakeTraits(trait, basal_level, induction_level);
 
-autofluorescence = get_auto_fluorescence(trait);
-% output.all_conc_Glu = y_ss_Glu + autofluorescence;
-% output.all_conc_Gal = y_ss_Gal + autofluorescence;
+% autofluorescence = get_auto_fluorescence(trait);
 output.all_conc_Glu = y_ss_Glu; % all 12 variables concentration at steady state, initial from Glu only condition
 output.all_conc_Gal = y_ss_Gal; % all 12 variables concentration at steady state, initial from Gal only condition
 
 % for GAL1 level, add autofluorescence
-output.all_conc_Glu(:,1) = output.all_conc_Glu(:,1) + autofluorescence;
-output.all_conc_Gal(:,1) = output.all_conc_Gal(:,1) + autofluorescence;
+% output.all_conc_Glu(:,1) = output.all_conc_Glu(:,1) + autofluorescence;
+% output.all_conc_Gal(:,1) = output.all_conc_Gal(:,1) + autofluorescence;
 
 end
 

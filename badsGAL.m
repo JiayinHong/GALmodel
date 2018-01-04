@@ -25,20 +25,21 @@ prior_sigma = parameter_update.prior_sigma;
 
 lb = zeros(1,n_parameter);  % the lower hard bounds are zeros
 ub = 1000 .* prior_mean';
+ub(end-4:end) = 10;         % hill coefficient
 % use 3 sigma interval as plausible boundary for each parameter
 plb = prior_mean' ./ (exp(3 .* prior_sigma))';   % or exp(log(prior_mean) - 3 .* prior_sigma)'
 pub = prior_mean' .* (exp(3 .* prior_sigma))';   % or exp(log(prior_mean) + 3 .* prior_sigma)'
 
 % custom OPTIONS
 opt = bads('defaults');     % get a default OPTIONS struct
-opt.MaxFunEvals = 20000;
+opt.MaxFunEvals = n_propose;
 
 % set outfile path
-if ~isdir('../results/badsOptim')
-    mkdir('../results/badsOptim');
+if ~isdir('../results/badsOptim/RenanData/')
+    mkdir('../results/badsOptim/RenanData/');
 end
 outfilepath = fullfile(...
-    '../results/badsOptim/', ...
+    '../results/badsOptim/RenanData/', ...
     sprintf(...
     '%s-%s-%s.txt', ...
     jobtag, sprintf('%03d',str2num(array_id)), ...

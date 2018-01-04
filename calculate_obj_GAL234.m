@@ -27,6 +27,6 @@ experiment_result = log10(experiment_result_linear);
 
 sum_obj = (simulation_result - experiment_result).^2;
 
-sum_obj = sum(sum_obj(:));
+sum_obj = nansum(sum_obj(:));
 
 end

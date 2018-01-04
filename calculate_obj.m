@@ -4,7 +4,8 @@ function [ sum_obj, simulation_result_linear, experiment_result_linear ] = calcu
 % return the sum of the difference as sum_obj (the objective function)
 
 load_global;
-autofluorescence = get_auto_fluorescence(trait);
+% autofluorescence = get_auto_fluorescence(trait);
+autofluorescence = 0;
 
 expt_basal = trait.basal_level;
 expt_induction = trait.ind_level;

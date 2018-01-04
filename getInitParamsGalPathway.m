@@ -14,7 +14,7 @@ param.exglu = 2*perc_to_nm;     % to solve the bifurcation problem
 param.exgal = 0;
 
 % The Current Equations In Use Is GALode3!
-odefunc = @(t,y)GALode3(t,y,param);
+odefunc = @(t,y)GALode8(t,y,param);
 
 % when exgal==0 -> Gal3*=0, C83=0, gal=0
 % tmp = ones(1,12);
@@ -40,7 +40,7 @@ param.exglu = 0;
 param.exgal = 2*perc_to_nm;     % i.e. sometimes the local and cluster got different results
 
 % The Current Equations In Use Is GALode3!
-odefunc = @(t,y)GALode3(t,y,param);
+odefunc = @(t,y)GALode8(t,y,param);
 
 % when exglu==0 -> R*=0, glu=0
 % tmp = ones(1,12);

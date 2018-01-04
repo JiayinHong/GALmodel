@@ -543,7 +543,7 @@ switch param_set_i
         % Bennett's model, the KMs were adapted based on experimental data
         param.kglu = 4350;
         param.kgal = 200;
-        param.kbase = 2000;
+        param.kbase = 0;
         param.KMglu = 7.5*10^6;    % to get rid of eternal saturation
         param.alpha = 200;
         

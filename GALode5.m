@@ -1,4 +1,4 @@
-function dydt = GALode4( t, y, param )
+function dydt = GALode5( t, y, param )
 % 2017.08.03 GAL model v2.0
 % updated from v1.0, only change previous parameter KMgal to alpha*KMglu,
 % alpha is the ratio of KMgal over KMglu. This modification makes it easier

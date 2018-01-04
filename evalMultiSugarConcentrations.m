@@ -14,7 +14,7 @@ for i_condition = 1:n_condition
     
     param.exglu = gluc_condition(i_condition) * perc_to_nm;
     param.exgal = galc_condition(i_condition) * perc_to_nm;
-    odefunc = @(t,y)GALode3(t,y,param);
+    odefunc = @(t,y)GALode8(t,y,param);
     curInitVal = init_val;
     
     if param.exglu == 0
