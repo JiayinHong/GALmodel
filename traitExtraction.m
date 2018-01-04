@@ -8,18 +8,25 @@ function traitExtraction(cellData, strainName)
 %   titration (the rows).
 
 % initialization of variables
-basal_level = nan(8,12);
-ind_level = nan(8,12);
-basal_frac = nan(8,12);
-ind_frac = nan(8,12);
-mask_basal = 0.5 .* ones(8,12);
-mask_induction = 0.5 .* ones(8,12);
+nrow = size(cellData,1);
+ncol = size(cellData,2);
+
+basal_level = nan(nrow,ncol);
+ind_level = nan(nrow,ncol);
+basal_frac = nan(nrow,ncol);
+ind_frac = nan(nrow,ncol);
+mask_basal = 0.5 .* ones(nrow,ncol);
+mask_induction = 0.5 .* ones(nrow,ncol);
 
 % setup the sugar titration gradient
-gluc_gradient = [2 .^ [0:-1:-6], 0]';
+if size(cellData)==[7,12]   % Renan's data
+    gluc_gradient = [2 .^ [0:-1:-6]]';
+else
+    gluc_gradient = [2 .^ [0:-1:-6], 0]';
+end
 galc_gradient = [0, 2 .^ [-8:1:2]];
 gluc = gluc_gradient * ones(1,12);
-galc = ones(8,1) * galc_gradient;
+galc = ones(nrow,1) * galc_gradient;
 
 % pre-determine the bin edge and bin size
 [hist_bin_edge, hist_bin_center] = GetHistBin(0.05, 9.95, 0.1);
@@ -37,9 +44,14 @@ countsListRef = histcounts(logRef, hist_bin_edge);  % get the list of counts in 
 normalizedCountsRef = countsListRef ./ countsTotalRef;
 thresh = median(logRef);    % ignore if there are more counts of query than ref data beneath the threshold
 
-for row = 1:8
-    for col = 1:12
-        if ~isnan(myData{row,col}.yfp)      % there is data in the current query well
+for row = 1:nrow
+    for col = 1:ncol
+        if ~isfield(myData{row,col},'yfp')
+            % do nothing, since already put NaN as place-holder
+            mask_basal(row,col) = 0;
+            mask_induction(row,col) = 0;
+            
+        elseif ~isnan(myData{row,col}.yfp)      % there is data in the current query well
             queryData = myData{row,col}.yfp;    % the current query well
             logQuery = log(queryData);  % natural logarithm, again
             countsTotalQuery = numel(queryData);    % the total counts of query data
@@ -67,7 +79,7 @@ for row = 1:8
     end
 end
 
-minModeWeight = min(basal_frac(8,12),0.1);
+minModeWeight = min(basal_frac(nrow,ncol),0.1);
 % the lower right well should be fully ON, where basal_frac
 % should be zero, so any fraction smaller than that could be due to
 % detection limit, however, funny data do exist, and I think a
@@ -81,8 +93,10 @@ mask_induction(id2) = 0;
 mask_basal(id2) = 1;
 
 % cells cultured in severe nutrient conditions
-mask_basal(8,1:4) = 0;
-mask_induction(8,1:4) = 0;
+if nrow==8
+    mask_basal(8,1:4) = 0;
+    mask_induction(8,1:4) = 0;
+end
 
 trait = table(basal_level(:), ind_level(:), basal_frac(:), ind_frac(:) ...
     , mask_basal(:), mask_induction(:), gluc(:), galc(:) ...
