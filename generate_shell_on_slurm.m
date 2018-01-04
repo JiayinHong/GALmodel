@@ -4,11 +4,16 @@
 
 %% generate shell scripts for BADS algorithm
 algorithm = 'bads';
-jobtag_list = {'wildtype_96well'};
-folder_name = '../metaData/noCompeteBinding/';
-fit_type = '96well';
+jobtag_list = {'BC187_Kayla','BC187_Renan','YJM978_Renan'};
+folder_name = '../metaData/competitiveBinding/';
+
 for jobtag = jobtag_list
     jobtag = jobtag{1};
+    if strcmp(jobtag,'BC187_Kayla')
+        fit_type = '96well';
+    else
+        fit_type = '84well';
+    end
     shell_on_slurm_generator( algorithm, jobtag, folder_name, fit_type )
 end
 
@@ -45,8 +50,9 @@ end
 
 %% generate shell scripts to fit GAL1,3,4 in all 96 well data
 algorithm = 'mcmc';
-jobtag_list = {'wildtype_96well', 'mig1d_96well', 'gal80d_96well'};
-folder_name = '../metaData/singleTrans-96well/';
+% jobtag_list = {'wildtype_96well', 'mig1d_96well', 'gal80d_96well'};
+jobtag_list = {'BC187_Kayla'};
+folder_name = '../metaData/competitiveBinding/';
 fit_type = '96well';
 for jobtag = jobtag_list
     jobtag = jobtag{1};

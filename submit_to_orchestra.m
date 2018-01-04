@@ -3,15 +3,29 @@
 %   for gal80d, we force a80=ag80=0, and keep them unchange;
 %   the other settings are the same to wt
 
-n_init = 50;     % 5 replicates
+n_init = 200;     % 5 replicates
 % n_propose = 1000000;     % run for 1000,000 iterations
-n_propose = 50000;
+n_propose = 20000;
 
-folder = '../metaData/singleTrans-96well/';
+folder = '../metaData/competitiveBinding/';
+% folder = '../metaData/singleTrans-96well/';
 % folder = '../metaData/fitGAL134-removeR/';
 % folder = '../metaData/fitGAL134-changeRform/';
 % folder1 = '../metaData/Aug1st-fitGAL134-vary-n/';
 % folder2 = '../metaData/Aug1st-fitGAL134-pure-sequestration/';
+
+%% use intracellular glucose concentration to replace all Mig1* in the equations
+base_param = set_parameter(10);  % nR1=nR3=nR4=1
+parameter_update = readtable('Nov10th_param_config_set10.csv');
+
+load('../traitExtraction/noneCompeteGenerated.mat')
+rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'BC187_Kayla', folder);
+
+% load('../traitExtraction/BC187_Renan.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'BC187_Renan', folder);
+% 
+% load('../traitExtraction/YJM978_Renan.mat')
+% rand_init_generator(n_init, trait, n_propose, base_param, parameter_update, 'YJM978_Renan', folder);
 
 %% use intracellular glucose concentration to replace all Mig1* in the equations
 base_param = set_parameter(3);  % nR1=nR3=nR4=1

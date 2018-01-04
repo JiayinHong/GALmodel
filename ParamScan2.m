@@ -19,23 +19,33 @@ base_val = param.(param_name);
 % vary parameter values based on the perturb coefficient
 varied_value = perturb_coefficient .* base_val;
 
+% if regexp(param_name, 'n*')     % hill coefficients
+%     perturb_coefficient = linspace(1,4,7);
+%     nValue = length(perturb_coefficient);
+%     varied_value = perturb_coefficient;
+% end
+
 if regexp(param_name, 'n*')     % hill coefficients
-    perturb_coefficient = linspace(1,4,7);
+    perturb_coefficient = linspace(-3,3,13);
     nValue = length(perturb_coefficient);
-    varied_value = perturb_coefficient;
+    varied_value = perturb_coefficient + base_val;
 end
 
 obj = [];
 
 for i=1:nValue
     param.(param_name) = varied_value(i);
-    output = evalGalPathway(param, target_trait, '96well');
-    obj(i) = output.G1obj;
-    if regexp(param_name, 'n*')
-        obj(8:13) = NaN;
-        % to match the other dimensions so that they could be
-        % stored in the same field of obj
+    if size(target_trait,1)==84
+        output = evalGalPathway(param, target_trait, '84well');
+    else
+        output = evalGalPathway(param, target_trait, '96well');
     end
+    obj(i) = output.G1obj;
+%     if regexp(param_name, 'n*')
+%         obj(8:13) = NaN;
+%         % to match the other dimensions so that they could be
+%         % stored in the same field of obj
+%     end
 end
 
 end
