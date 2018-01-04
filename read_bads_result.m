@@ -4,9 +4,17 @@ function badsResult = read_bads_result(resultDir)
 myBadsRes = dir(resultDir);
 myBadsRes = myBadsRes([myBadsRes.isdir] == 0);
 nfile = numel(myBadsRes);
+
+filename_pat = '([\d_\w]+)-\d{3}-\d{6}_\d{2}:\d{2}.txt';
+
 for ifile = 1:nfile
-    if ~ strcmp(myBadsRes(ifile).name, '.DS_Store')
-        [param, obj, iter, evaltime] = solo_bads_result(fullfile(resultDir, myBadsRes(ifile).name));
+    filename = myBadsRes(ifile).name;
+    if ~ strcmp(filename, '.DS_Store')
+        tok = regexp(filename,filename_pat,'tokens');
+        jobtag = tok{1};
+        jobtag_all(ifile) = jobtag;
+        filename_all{ifile} = filename;
+        [param, obj, iter, evaltime] = solo_bads_result(fullfile(resultDir, filename));
         best_params{ifile} = param;
         sum_obj(ifile) = obj;
         total_iter(ifile) = iter;
@@ -14,8 +22,8 @@ for ifile = 1:nfile
     end
 end
 
-badsResult = table(sum_obj', total_iter', total_evaltime', best_params' ...
-    , 'VariableNames', {'sum_obj', 'total_iter', 'total_evaltime', 'best_params'});
+badsResult = table(sum_obj', total_iter', total_evaltime', best_params', jobtag_all', filename_all' ...
+    , 'VariableNames', {'sum_obj', 'total_iter', 'total_evaltime', 'best_params', 'jobtag', 'filename'});
 badsResult = badsResult(badsResult.total_iter ~= 0, :);     % to remove the blank row caused by '.DS_Store'
 
 end
