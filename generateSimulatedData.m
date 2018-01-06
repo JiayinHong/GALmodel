@@ -11,6 +11,8 @@ param_names = parameter_update.parameter_name;
 base_param = param_map;
 mask_basal = GAL1_trait.mask_basal;
 mask_induction = GAL1_trait.mask_induction;
+basal_frac = GAL1_trait.basal_frac;
+ind_frac = GAL1_trait.ind_frac;
 
 %% setup the sugar titration gradient
 gluc_gradient = [2 .^ [0:-1:-6], 0]';
@@ -31,8 +33,8 @@ ind_level = y_ss_Gal(:,1);
 basal_level = log(basal_level ./3000) + 7.34;   % funcional inverse of logyfp_to_nm
 ind_level = log(ind_level ./3000) + 7.34;
 
-trait = table(basal_level, ind_level, mask_basal, mask_induction, gluc, galc ...
-    , 'VariableNames', {'basal_level', 'ind_level', 'mask_basal', 'mask_induction' ...
+trait = table(basal_level, ind_level, basal_frac, ind_frac, mask_basal, mask_induction, gluc, galc ...
+    , 'VariableNames', {'basal_level', 'ind_level', 'basal_frac', 'ind_frac', 'mask_basal', 'mask_induction' ...
     , 'gluc', 'galc'});
 
 save(fullfile('../metaData/trait_extraction/', 'competitiveNoneNoisy.mat'), 'trait')
@@ -68,8 +70,8 @@ noisy_basal_level(id1) = tmp(id1);
 noisy_basal_level = log(noisy_basal_level ./3000) + 7.34;   % funcional inverse of logyfp_to_nm
 noisy_ind_level = log(noisy_ind_level ./3000) + 7.34;
 
-trait = table(noisy_basal_level, noisy_ind_level, mask_basal, mask_induction, gluc, galc ...
-    , 'VariableNames', {'basal_level', 'ind_level', 'mask_basal', 'mask_induction' ...
+trait = table(noisy_basal_level, noisy_ind_level, basal_frac, ind_frac, mask_basal, mask_induction, gluc, galc ...
+    , 'VariableNames', {'basal_level', 'ind_level', 'basal_frac', 'ind_frac', 'mask_basal', 'mask_induction' ...
     , 'gluc', 'galc'});
 
 save(fullfile('../metaData/trait_extraction/', 'competitiveAddNoise.mat'), 'trait')
