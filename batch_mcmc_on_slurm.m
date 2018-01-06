@@ -1,5 +1,5 @@
 function batch_mcmc_on_slurm( folder_name, jobtag, array_id, fit_type )
-
+addpath(genpath('../../matlab_script/'))
 task_id = str2double(array_id);
 filepath = fullfile(folder_name, [jobtag, num2str(task_id, '_%03d'), '.mat']);
 load(filepath);
